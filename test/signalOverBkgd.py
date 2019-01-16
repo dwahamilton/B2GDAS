@@ -46,7 +46,7 @@ for abin in xrange(nbins):
     runningBkgd += fbkgdHist.GetBinContent(abin)
 
     if runningBkgd == 0:
-        soverb.SetBinContent(abin, 0)
+        continue 
     else: 
         soverb.SetBinContent(abin, runningSig/math.sqrt(runningBkgd))
 
