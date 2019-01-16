@@ -363,18 +363,6 @@ def plot_mttbar(argv) :
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     fout.cd()
     fout.Write()
     fout.Close()
