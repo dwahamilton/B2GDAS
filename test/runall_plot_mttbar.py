@@ -10,6 +10,7 @@
 import sys
 import array as array
 from plot_mttbar import plot_mttbar
+import os
 
 file_list = []
 file_list.append(["SingleElectron_2016_All.root","data"])
@@ -53,6 +54,16 @@ file_list.append(["singletop_tWchan_antitop.root","background"])
 file_list.append(["singletop_tWchan_top.root","background"])
 file_list.append(["singletop_tchan_antitop.root","background"])
 file_list.append(["singletop_tchan_top.root","background"])
+
+outputs = ["output","output/data","output/background","output/signal"]
+
+for path in outputs:
+	if not os.path.exists(path): os.mkdir(path)
+
+# if not os.path.exists("output"): os.mkdir("output")
+# os.mkdir("output/data")
+# os.mkdir("output/background")
+# os.mkdir("output/signal")
 
 for file,file_type in file_list:
 
