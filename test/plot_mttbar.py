@@ -23,6 +23,9 @@ def plot_mttbar(argv) :
                       dest='file_out',
                       help='Output file')
     
+    parser.add_option('--leptontype', type='int', action='store',
+                      dest='leptontype',
+                      help='0 is electron 1 is muon')
     #parser.add_option('--isData', action='store_true',
     #                  dest='isData',
     #                  default = False,
@@ -43,6 +46,28 @@ def plot_mttbar(argv) :
     h_mttbar = ROOT.TH1F("h_mttbar", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
     h_mtopHad = ROOT.TH1F("h_mtopHad", ";m_{jet} (GeV);Number", 100, 0, 400)
     h_mtopHadGroomed = ROOT.TH1F("h_mtopHadGroomed", ";Groomed m_{jet} (GeV);Number", 100, 0, 400)
+    
+
+    #Pt, Eta, Phi Spectra
+    h_FatJetPt = ROOT.TH1F("h_FatJetPt", ";p_{T} (GeV);Number", 100, 0, 5000)
+    h_FatJetEta = ROOT.TH1F("h_FatJetEta", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+    h_FatJetPhi = ROOT.TH1F("h_FatJetPhi", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+
+
+    #h_NearestAK4JetPt = 
+    #h_NearestAK4JetEta = 
+    #h_NearestAK4JetPhi = 
+    #h_ElectronPt =
+    #h_ElectronEta =
+    #h_ElectronPhi =
+    #h_MuonPt =
+    #h_MuonEta =
+    #h_MuonPhi =
+
+
+
+
+
     fin = ROOT.TFile.Open(options.file_in)
 
 
@@ -195,12 +220,19 @@ def plot_mttbar(argv) :
                 break
 
             # Muons only for now
-            if LeptonType[0] != 13 :
-                continue
+            if options.leptontype == 1:
+                if LeptonType[0] != 13 :
+                    continue
+                if SemiLeptTrig[0] != 1  :
+                    continue
 
-            # Muon triggers only for now (use HLT_Mu45_eta2p1 with index 1)
-            if SemiLeptTrig[1] != 1  :
-                continue
+            if options.leptontype == 0:
+                if LeptonType[0] != 11 :
+                    continue
+                if SemiLeptTrig[1] != 1  :
+                    continue        
+
+
 
 
             hadTopCandP4 = ROOT.TLorentzVector()
@@ -263,5 +295,3 @@ def plot_mttbar(argv) :
 
 if __name__ == "__main__" :
     plot_mttbar(sys.argv)
-
-
