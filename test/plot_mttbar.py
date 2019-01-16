@@ -1,18 +1,18 @@
 #! /usr/bin/env python
 
 
-## _________                _____.__                            __  .__               
-## \_   ___ \  ____   _____/ ____\__| ____  __ ______________ _/  |_|__| ____   ____  
-## /    \  \/ /  _ \ /    \   __\|  |/ ___\|  |  \_  __ \__  \\   __\  |/  _ \ /    \ 
+## _________                _____.__                            __  .__
+## \_   ___ \  ____   _____/ ____\__| ____  __ ______________ _/  |_|__| ____   ____
+## /    \  \/ /  _ \ /    \   __\|  |/ ___\|  |  \_  __ \__  \\   __\  |/  _ \ /    \
 ## \     \___(  <_> )   |  \  |  |  / /_/  >  |  /|  | \// __ \|  | |  (  <_> )   |  \
 ##  \______  /\____/|___|  /__|  |__\___  /|____/ |__|  (____  /__| |__|\____/|___|  /
-##         \/            \/        /_____/                   \/                    \/ 
+##         \/            \/        /_____/                   \/                    \/
 import sys
 import array as array
 from optparse import OptionParser
 
 
-def plot_mttbar(argv) : 
+def plot_mttbar(argv) :
     parser = OptionParser()
 
     parser.add_option('--file_in', type='string', action='store',
@@ -22,12 +22,12 @@ def plot_mttbar(argv) :
     parser.add_option('--file_out', type='string', action='store',
                       dest='file_out',
                       help='Output file')
-    
+
     #parser.add_option('--isData', action='store_true',
     #                  dest='isData',
     #                  default = False,
     #                  help='Is this Data?')
-        
+
     (options, args) = parser.parse_args(argv)
     argv = []
 
@@ -43,16 +43,62 @@ def plot_mttbar(argv) :
     h_mttbar = ROOT.TH1F("h_mttbar", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
     h_mtopHad = ROOT.TH1F("h_mtopHad", ";m_{jet} (GeV);Number", 100, 0, 400)
     h_mtopHadGroomed = ROOT.TH1F("h_mtopHadGroomed", ";Groomed m_{jet} (GeV);Number", 100, 0, 400)
-    fin = ROOT.TFile.Open(options.file_in)
+    h_SemiLeptTrig          = ROOT.TH1F("h_SemiLeptTrig", ";blah;blah", 200, 0, 500)
+    h_SemiLeptWeight        = ROOT.TH1F("h_SemiLeptWeight", ";blah;blah", 200, 0, 500)
+    h_PUWeight              = ROOT.TH1F("h_PUWeight", ";blah;blah", 200, 0, 500)
+    h_GenWeight             = ROOT.TH1F("h_GenWeight", ";blah;blah", 200, 0, 500)
+    h_FatJetPt              = ROOT.TH1F("h_FatJetPt", ";blah;blah", 200, 0, 500)
+    h_FatJetEta             = ROOT.TH1F("h_FatJetEta", ";blah;blah", 200, 0, 500)
+    h_FatJetPhi             = ROOT.TH1F("h_FatJetPhi", ";blah;blah", 200, 0, 500)
+    h_FatJetRap             = ROOT.TH1F("h_FatJetRap", ";blah;blah", 200, 0, 500)
+    h_FatJetEnergy          = ROOT.TH1F("h_FatJetEnergy", ";blah;blah", 200, 0, 500)
+    h_FatJetBDisc           = ROOT.TH1F("h_FatJetBDisc", ";blah;blah", 200, 0, 500)
+    h_FatJetMass            = ROOT.TH1F("h_FatJetMass", ";blah;blah", 200, 0, 500)
+    h_FatJetMassSoftDrop    = ROOT.TH1F("h_FatJetMassSoftDrop", ";blah;blah", 200, 0, 500)
+    h_FatJetTau32           = ROOT.TH1F("h_FatJetTau32", ";blah;blah", 200, 0, 500)
+    h_FatJetTau21           = ROOT.TH1F("h_FatJetTau21", ";blah;blah", 200, 0, 500)
+    h_FatJetSDBDiscW        = ROOT.TH1F("h_FatJetSDBDiscW", ";blah;blah", 200, 0, 500)
+    h_FatJetSDBDiscB        = ROOT.TH1F("h_FatJetSDBDiscB", ";blah;blah", 200, 0, 500)
+    h_FatJetSDsubjetWpt     = ROOT.TH1F("h_FatJetSDsubjetWpt", ";blah;blah", 200, 0, 500)
+    h_FatJetSDsubjetWmass   = ROOT.TH1F("h_FatJetSDsubjetWmass", ";blah;blah", 200, 0, 500)
+    h_FatJetSDsubjetBpt     = ROOT.TH1F("h_FatJetSDsubjetBpt", ";blah;blah", 200, 0, 500)
+    h_FatJetSDsubjetBmass   = ROOT.TH1F("h_FatJetSDsubjetBmass", ";blah;blah", 200, 0, 500)
+    h_FatJetJECUpSys        = ROOT.TH1F("h_FatJetJECUpSys", ";blah;blah", 200, 0, 500)
+    h_FatJetJECDnSys        = ROOT.TH1F("h_FatJetJECDnSys", ";blah;blah", 200, 0, 500)
+    h_FatJetJERUpSys        = ROOT.TH1F("h_FatJetJERUpSys", ";blah;blah", 200, 0, 500)
+    h_FatJetJERDnSys        = ROOT.TH1F("h_FatJetJERDnSys", ";blah;blah", 200, 0, 500)
+    h_LeptonType            = ROOT.TH1F("h_LeptonType", ";blah;blah", 200, 0, 500)
+    h_LeptonPt              = ROOT.TH1F("h_LeptonPt", ";blah;blah", 200, 0, 500)
+    h_LeptonEta             = ROOT.TH1F("h_LeptonEta", ";blah;blah", 200, 0, 500)
+    h_LeptonPhi             = ROOT.TH1F("h_LeptonPhi", ";blah;blah", 200, 0, 500)
+    h_LeptonEnergy          = ROOT.TH1F("h_LeptonEnergy", ";blah;blah", 200, 0, 500)
+    h_LeptonIso             = ROOT.TH1F("h_LeptonIso", ";blah;blah", 200, 0, 500)
+    h_LeptonPtRel           = ROOT.TH1F("h_LeptonPtRel", ";blah;blah", 200, 0, 500)
+    h_LeptonDRMin           = ROOT.TH1F("h_LeptonDRMin", ";blah;blah", 200, 0, 500)
+    h_SemiLepMETpt          = ROOT.TH1F("h_SemiLepMETpt", ";blah;blah", 200, 0, 500)
+    h_SemiLepMETphi         = ROOT.TH1F("h_SemiLepMETphi", ";blah;blah", 200, 0, 500)
+    h_SemiLepNvtx           = ROOT.TH1F("h_SemiLepNvtx", ";blah;blah", 200, 0, 500)
+    h_FatJetDeltaPhiLep     = ROOT.TH1F("h_FatJetDeltaPhiLep", ";blah;blah", 200, 0, 500)
+    h_NearestAK4JetBDisc    = ROOT.TH1F("h_NearestAK4JetBDisc", ";blah;blah", 200, 0, 500)
+    h_NearestAK4JetPt       = ROOT.TH1F("h_NearestAK4JetPt", ";blah;blah", 200, 0, 500)
+    h_NearestAK4JetEta      = ROOT.TH1F("h_NearestAK4JetEta", ";blah;blah", 200, 0, 500)
+    h_NearestAK4JetPhi      = ROOT.TH1F("h_NearestAK4JetPhi", ";blah;blah", 200, 0, 500)
+    h_NearestAK4JetMass     = ROOT.TH1F("h_NearestAK4JetMass", ";blah;blah", 200, 0, 500)
+    h_NearestAK4JetJECUpSys = ROOT.TH1F("h_NearestAK4JetJECUpSys", ";blah;blah", 200, 0, 500)
+    h_NearestAK4JetJECDnSys = ROOT.TH1F("h_NearestAK4JetJECDnSys", ";blah;blah", 200, 0, 500)
+    h_NearestAK4JetJERUpSys = ROOT.TH1F("h_NearestAK4JetJERUpSys", ";blah;blah", 200, 0, 500)
+    h_NearestAK4JetJERDnSys = ROOT.TH1F("h_NearestAK4JetJERDnSys", ";blah;blah", 200, 0, 500)
+    h_SemiLeptRunNum        = ROOT.TH1F("h_SemiLeptRunNum", ";blah;blah", 200, 0, 500)
+    h_SemiLeptLumiNum       = ROOT.TH1F("h_SemiLeptLumiNum", ";blah;blah", 200, 0, 500)
+    h_SemiLeptEventNum      = ROOT.TH1F("h_SemiLeptEventNum", ";blah;blah", 200, 0, 500)
 
+    fin = ROOT.TFile.Open(options.file_in)
 
     trees = [ fin.Get("TreeSemiLept") ]
 
-
-    
     for itree,t in enumerate(trees) :
 
-        #if options.isData : 
+        #if options.isData :
         SemiLeptTrig        =  ROOT.vector('int')()
         SemiLeptWeight      = array.array('f', [0.] )
         PUWeight            = array.array('f', [0.] )
@@ -66,7 +112,7 @@ def plot_mttbar(argv) :
         FatJetMass          = array.array('f', [-1.])
         FatJetMassSoftDrop  = array.array('f', [-1.])
         FatJetTau32         = array.array('f', [-1.])
-        FatJetTau21         = array.array('f', [-1.]) 
+        FatJetTau21         = array.array('f', [-1.])
         FatJetSDBDiscW      = array.array('f', [-1.])
         FatJetSDBDiscB      = array.array('f', [-1.])
         FatJetSDsubjetWpt   = array.array('f', [-1.])
@@ -88,7 +134,7 @@ def plot_mttbar(argv) :
         SemiLepMETpt        = array.array('f', [-1.])
         SemiLepMETphi       = array.array('f', [-1.])
         SemiLepNvtx         = array.array('f', [-1.])
-        FatJetDeltaPhiLep      = array.array('f', [-1.]) 
+        FatJetDeltaPhiLep      = array.array('f', [-1.])
         NearestAK4JetBDisc            = array.array('f', [-1.])
         NearestAK4JetPt     = array.array('f', [-1.])
         NearestAK4JetEta    = array.array('f', [-1.])
@@ -98,12 +144,12 @@ def plot_mttbar(argv) :
         NearestAK4JetJECDnSys = array.array('f', [-1.])
         NearestAK4JetJERUpSys = array.array('f', [-1.])
         NearestAK4JetJERDnSys = array.array('f', [-1.])
-        SemiLeptRunNum        = array.array('f', [-1.])   
-        SemiLeptLumiNum     = array.array('f', [-1.])   
-        SemiLeptEventNum      = array.array('f', [-1.])   
+        SemiLeptRunNum        = array.array('f', [-1.])
+        SemiLeptLumiNum     = array.array('f', [-1.])
+        SemiLeptEventNum      = array.array('f', [-1.])
 
 
-        #if options.isData : 
+        #if options.isData :
         t.SetBranchAddress('SemiLeptTrig'        , SemiLeptTrig )
         t.SetBranchAddress('SemiLeptWeight'      , SemiLeptWeight      ) #Combined weight of all scale factors (lepton, PU, generator) relevant for the smeileptonic event selection
         t.SetBranchAddress('PUWeight'            , PUWeight            )
@@ -211,8 +257,8 @@ def plot_mttbar(argv) :
             nuCandP4.SetPtEtaPhiM( SemiLepMETpt[0], 0, SemiLepMETphi[0], SemiLepMETpt[0] )
             theLepton = ROOT.TLorentzVector()
             theLepton.SetPtEtaPhiE( LeptonPt[0], LeptonEta[0], LeptonPhi[0], LeptonEnergy[0] ) # Assume massless
-            
-            
+
+
             tau32 = FatJetTau32[0]
             mass_sd = FatJetMassSoftDrop[0]
             bdisc = NearestAK4JetBDisc[0]
@@ -226,12 +272,12 @@ def plot_mttbar(argv) :
                 continue
 
 
-            ##  ____  __.__                              __  .__         __________                     
-            ## |    |/ _|__| ____   ____   _____ _____ _/  |_|__| ____   \______   \ ____   ____  ____  
-            ## |      < |  |/    \_/ __ \ /     \\__  \\   __\  |/ ___\   |       _// __ \_/ ___\/  _ \ 
+            ##  ____  __.__                              __  .__         __________
+            ## |    |/ _|__| ____   ____   _____ _____ _/  |_|__| ____   \______   \ ____   ____  ____
+            ## |      < |  |/    \_/ __ \ /     \\__  \\   __\  |/ ___\   |       _// __ \_/ ___\/  _ \
             ## |    |  \|  |   |  \  ___/|  Y Y  \/ __ \|  | |  \  \___   |    |   \  ___/\  \__(  <_> )
-            ## |____|__ \__|___|  /\___  >__|_|  (____  /__| |__|\___  >  |____|_  /\___  >\___  >____/ 
-            ##         \/       \/     \/      \/     \/             \/          \/     \/     \/       
+            ## |____|__ \__|___|  /\___  >__|_|  (____  /__| |__|\___  >  |____|_  /\___  >\___  >____/
+            ##         \/       \/     \/      \/     \/             \/          \/     \/     \/
 
             # Now we do our kinematic calculation based on the categories of the
             # number of top and bottom tags
@@ -255,7 +301,69 @@ def plot_mttbar(argv) :
             h_mttbar.Fill( mttbar, SemiLeptWeight[0] )
             h_mtopHadGroomed.Fill( mass_sd, SemiLeptWeight[0] )
             h_mtopHad.Fill( hadTopCandP4.M(), SemiLeptWeight[0] )
-            
+            h_SemiLeptTrig.Fill( SemiLeptTrig[0], SemiLeptWeight[0] )
+            h_SemiLeptWeight.Fill( SemiLeptWeight[0], SemiLeptWeight[0] )
+            h_PUWeight.Fill( PUWeight[0], SemiLeptWeight[0] )
+            h_GenWeight.Fill( GenWeight[0], SemiLeptWeight[0] )
+            h_FatJetPt.Fill( FatJetPt[0], SemiLeptWeight[0] )
+            h_FatJetEta.Fill( FatJetEta[0], SemiLeptWeight[0] )
+            h_FatJetPhi.Fill( FatJetPhi[0], SemiLeptWeight[0] )
+            h_FatJetRap.Fill( FatJetRap[0], SemiLeptWeight[0] )
+            h_FatJetEnergy.Fill( FatJetEnergy[0], SemiLeptWeight[0] )
+            h_FatJetBDisc.Fill( FatJetBDisc[0], SemiLeptWeight[0] )
+            h_FatJetMass.Fill( FatJetMass[0], SemiLeptWeight[0] )
+            h_FatJetMassSoftDrop.Fill( FatJetMassSoftDrop[0], SemiLeptWeight[0] )
+            h_FatJetTau32.Fill( FatJetTau32[0], SemiLeptWeight[0] )
+            h_FatJetTau21.Fill( FatJetTau21[0], SemiLeptWeight[0] )
+            h_FatJetSDBDiscW.Fill( FatJetSDBDiscW[0], SemiLeptWeight[0] )
+            h_FatJetSDBDiscB.Fill( FatJetSDBDiscB[0], SemiLeptWeight[0] )
+            h_FatJetSDsubjetWpt.Fill( FatJetSDsubjetWpt[0], SemiLeptWeight[0] )
+            h_FatJetSDsubjetWmass.Fill( FatJetSDsubjetWmass[0], SemiLeptWeight[0] )
+            h_FatJetSDsubjetBpt.Fill( FatJetSDsubjetBpt[0], SemiLeptWeight[0] )
+            h_FatJetSDsubjetBmass.Fill( FatJetSDsubjetBmass[0], SemiLeptWeight[0] )
+            h_FatJetJECUpSys.Fill( FatJetJECUpSys[0], SemiLeptWeight[0] )
+            h_FatJetJECDnSys.Fill( FatJetJECDnSys[0], SemiLeptWeight[0] )
+            h_FatJetJERUpSys.Fill( FatJetJERUpSys[0], SemiLeptWeight[0] )
+            h_FatJetJERDnSys.Fill( FatJetJERDnSys[0], SemiLeptWeight[0] )
+            h_LeptonType.Fill( LeptonType[0], SemiLeptWeight[0] )
+            h_LeptonPt.Fill( LeptonPt[0], SemiLeptWeight[0] )
+            h_LeptonEta.Fill( LeptonEta[0], SemiLeptWeight[0] )
+            h_LeptonPhi.Fill( LeptonPhi[0], SemiLeptWeight[0] )
+            h_LeptonEnergy.Fill( LeptonEnergy[0], SemiLeptWeight[0] )
+            h_LeptonIso.Fill( LeptonIso[0], SemiLeptWeight[0] )
+            h_LeptonPtRel.Fill( LeptonPtRel[0], SemiLeptWeight[0] )
+            h_LeptonDRMin.Fill( LeptonDRMin[0], SemiLeptWeight[0] )
+            h_SemiLepMETpt.Fill( SemiLepMETpt[0], SemiLeptWeight[0] )
+            h_SemiLepMETphi.Fill( SemiLepMETphi[0], SemiLeptWeight[0] )
+            h_SemiLepNvtx.Fill( SemiLepNvtx[0], SemiLeptWeight[0] )
+            h_FatJetDeltaPhiLep.Fill( FatJetDeltaPhiLep[0], SemiLeptWeight[0] )
+            h_NearestAK4JetBDisc.Fill( NearestAK4JetBDisc[0], SemiLeptWeight[0] )
+            h_NearestAK4JetPt.Fill( NearestAK4JetPt[0], SemiLeptWeight[0] )
+            h_NearestAK4JetEta.Fill( NearestAK4JetEta[0], SemiLeptWeight[0] )
+            h_NearestAK4JetPhi.Fill( NearestAK4JetPhi[0], SemiLeptWeight[0] )
+            h_NearestAK4JetMass.Fill( NearestAK4JetMass[0], SemiLeptWeight[0] )
+            h_NearestAK4JetJECUpSys.Fill( NearestAK4JetJECUpSys[0], SemiLeptWeight[0] )
+            h_NearestAK4JetJECDnSys.Fill( NearestAK4JetJECDnSys[0], SemiLeptWeight[0] )
+            h_NearestAK4JetJERUpSys.Fill( NearestAK4JetJERUpSys[0], SemiLeptWeight[0] )
+            h_NearestAK4JetJERDnSys.Fill( NearestAK4JetJERDnSys[0], SemiLeptWeight[0] )
+            h_SemiLeptRunNum.Fill( SemiLeptRunNum[0], SemiLeptWeight[0] )
+            h_SemiLeptLumiNum.Fill( SemiLeptLumiNum[0], SemiLeptWeight[0] )
+            h_SemiLeptEventNum.Fill( SemiLeptEventNum[0], SemiLeptWeight[0] )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     fout.cd()
     fout.Write()
