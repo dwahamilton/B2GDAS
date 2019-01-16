@@ -22,6 +22,7 @@ file_list.append(["WJetsToLNu_Pt-100To250.root","background"])
 file_list.append(["WJetsToLNu_Pt-250To400.root","background"])
 file_list.append(["WJetsToLNu_Pt-400To600.root","background"])
 file_list.append(["WJetsToLNu_Pt-600ToInf.root","background"])
+
 # file_list.append(["QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8.root","background"])
 # file_list.append(["QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8.root","background"])
 # file_list.append(["QCD_Pt_1400to1800_TuneCUETP8M1_13TeV_pythia8.root","background"])
@@ -37,6 +38,7 @@ file_list.append(["WJetsToLNu_Pt-600ToInf.root","background"])
 # file_list.append(["QCD_Pt_600to800_TuneCUETP8M1_13TeV_pythia8.root","background"])
 # file_list.append(["QCD_Pt_800to1000_TuneCUETP8M1_13TeV_pythia8.root","background"])
 # file_list.append(["QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8.root","background"])
+
 file_list.append(["rsg_1000.root","signal"])
 file_list.append(["rsg_1250.root","signal"])
 file_list.append(["rsg_1500.root","signal"])
@@ -55,18 +57,13 @@ file_list.append(["singletop_tWchan_top.root","background"])
 file_list.append(["singletop_tchan_antitop.root","background"])
 file_list.append(["singletop_tchan_top.root","background"])
 
-outputs = ["output","output/data","output/background","output/signal"]
+# outputs = ["./output","./output/electon","./output/muon",
+# "./output/electron/data","./output/electron/background","./output/electon/signal",
+# "./output/muon/data","./output/muon/background","./output/muon/signal"]
 
-for path in outputs:
-	if not os.path.exists(path): os.mkdir(path)
-
-# if not os.path.exists("output"): os.mkdir("output")
-# os.mkdir("output/data")
-# os.mkdir("output/background")
-# os.mkdir("output/signal")
 
 for file,file_type in file_list:
-
-	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "output/" + file_type + "/" + file])
+	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "output/electron/" + file_type + "/" + file,"--leptontype",str(0)])
+	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "output/muon/" + file_type + "/" + file,"--leptontype",str(1)])
 
 
