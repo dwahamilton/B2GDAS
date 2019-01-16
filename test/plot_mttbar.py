@@ -22,7 +22,9 @@ def plot_mttbar(argv) :
     parser.add_option('--file_out', type='string', action='store',
                       dest='file_out',
                       help='Output file')
-
+    parser.add_option('--leptontype', type='int', action='store',
+                      dest='leptontype',
+                      help='0 is electron 1 is muon')
     #parser.add_option('--isData', action='store_true',
     #                  dest='isData',
     #                  default = False,
@@ -43,12 +45,13 @@ def plot_mttbar(argv) :
     h_mttbar = ROOT.TH1F("h_mttbar", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
     h_mtopHad = ROOT.TH1F("h_mtopHad", ";m_{jet} (GeV);Number", 100, 0, 400)
     h_mtopHadGroomed = ROOT.TH1F("h_mtopHadGroomed", ";Groomed m_{jet} (GeV);Number", 100, 0, 400)
+    #Pt, Eta, Phi Spectra
+    h_FatJetPt = ROOT.TH1F("h_FatJetPt", ";p_{T} (GeV);Number", 100, 0, 5000)
+    h_FatJetEta = ROOT.TH1F("h_FatJetEta", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+    h_FatJetPhi = ROOT.TH1F("h_FatJetPhi", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
     h_SemiLeptTrig          = ROOT.TH1F("h_SemiLeptTrig", ";blah;blah", 200, 0, 500)
     h_SemiLeptWeight        = ROOT.TH1F("h_SemiLeptWeight", ";blah;blah", 200, 0, 500)
     h_PUWeight              = ROOT.TH1F("h_PUWeight", ";blah;blah", 200, 0, 500)
-    h_GenWeight             = ROOT.TH1F("h_GenWeight", ";blah;blah", 200, 0, 500)
-    h_FatJetPt              = ROOT.TH1F("h_FatJetPt", ";blah;blah", 200, 0, 500)
-    h_FatJetEta             = ROOT.TH1F("h_FatJetEta", ";blah;blah", 200, 0, 500)
     h_FatJetPhi             = ROOT.TH1F("h_FatJetPhi", ";blah;blah", 200, 0, 500)
     h_FatJetRap             = ROOT.TH1F("h_FatJetRap", ";blah;blah", 200, 0, 500)
     h_FatJetEnergy          = ROOT.TH1F("h_FatJetEnergy", ";blah;blah", 200, 0, 500)
@@ -241,12 +244,19 @@ def plot_mttbar(argv) :
                 break
 
             # Muons only for now
-            if LeptonType[0] != 13 :
-                continue
+            if options.leptontype == 1:
+                if LeptonType[0] != 13 :
+                    continue
+                if SemiLeptTrig[0] != 1  :
+                    continue
 
-            # Muon triggers only for now (use HLT_Mu45_eta2p1 with index 1)
-            if SemiLeptTrig[1] != 1  :
-                continue
+            if options.leptontype == 0:
+                if LeptonType[0] != 11 :
+                    continue
+                if SemiLeptTrig[1] != 1  :
+                    continue        
+
+
 
 
             hadTopCandP4 = ROOT.TLorentzVector()
@@ -371,5 +381,3 @@ def plot_mttbar(argv) :
 
 if __name__ == "__main__" :
     plot_mttbar(sys.argv)
-
-
