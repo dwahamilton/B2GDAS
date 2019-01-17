@@ -1,3 +1,35 @@
+#include <ofstream>
+
+void write_card(TString card, int data, int back, int ttbar, int signal){
+	ofstream out("cards/" + card + ".txt");
+	out<<"# Simple counting experiment, with one signal and one background"<<endl;
+	out<<"imax 2  number of channels"<<endl;
+	out<<"jmax 2  number of backgrounds"<<endl;
+	out<<"kmax *  number of nuisance parameters (sources of systematic uncertainty)"<<endl;
+	out<<"------------"<<endl;
+	out<<"# we have just one channel, in which we observe 0 events"<<endl;
+	out<<"bin         elec  muon"<<endl;
+	out<<"observation 4395  3870"<<endl;
+	out<<"------------"<<endl;
+	out<<"# now we list the expected number of events for signal and all backgrounds in that bin"<<endl;
+	out<<"# the second 'process' line must have a positive number for backgrounds, and 0 for signal"<<endl;
+	out<<"# then we list the independent sources of uncertainties, and give their effect (syst. error)"<<endl;
+	out<<"# on each process and bin"<<endl;
+	out<<""<<endl;
+	out<<"#bkg is w+jets, single top, and QCD"<<endl;
+	out<<"bin            elec    elec      elec     muon   muon     muon"<<endl;
+	out<<"process         sig    bkg       ttbar    sig     bkg     ttbar"<<endl;
+	out<<"process          0      1         2        0       1        2"<<endl;
+	out<<"rate           62.7   330.402  4857.75   71.62   583.246  4585.7"<<endl;
+	out<<"------------"<<endl;
+	out<<"lumi     lnN    1.026  1.026  1.026  1.026  1.026  1.026   #lumi affects both signal and background (mc-driven). lnN = lognormal"<<endl;
+	out<<"trigger  lnN    1.05   1.05   1.05   1.01   1.01   1.01    #trigger uncertainty"<<endl;
+	out<<"elec_id  lnN    1.02   1.02   1.02     -      -      -     #lepton id scale factor uncertainty"<<endl;
+	out<<"muon_id  lnN      -      -      -    1.02   1.02   1.02    #lepton id scale factor uncertainty"<<endl;
+	out<<"jec      lnN    1.10   1.10   1.10   1.10   1.10   1.10    #jet energy scale uncertainty"<<endl;
+	out<<"jer      lnN    1.05   1.05   1.05   1.05   1.05   1.05    #jet energy resolution uncertainty"<<endl;
+}
+
 void background_plotter(int rebin = 2, bool verbose = false, double lumi=36000.0){
 
 	TFile* output = new TFile("stack_plots/stack_plots.root","RECREATE");
@@ -5,19 +37,21 @@ void background_plotter(int rebin = 2, bool verbose = false, double lumi=36000.0
 	vector<pair<TString,double> > backgrounds;
 	vector<TString> datas;
 	vector<TString> histos;
-	vector<TString> leptontype;
+	vector<TString> channel;
 	vector<pair<TString,double> > masspoint;
 
-	// masspoint.push_back(make_pair("500",275.9*1.3/100000.0));
-	// masspoint.push_back(make_pair("750",62.41*1.3/100000.0));
-	// masspoint.push_back(make_pair("1000",20.05*1.3/98560.0));
-	// masspoint.push_back(make_pair("2000",));
-	// masspoint.push_back(make_pair("2500",));
-	// masspoint.push_back(make_pair("3000",));
-	// masspoint.push_back(make_pair("3500",));
-	// masspoint.push_back(make_pair("4000",));
-	// masspoint.push_back(make_pair("4500",));
-	// masspoint.push_back(make_pair("5000",));
+	TString basepath = "/uscms/home/jhiltb/nobackup/sandbox/LongExercise/CMSSW_8_0_24_patch1/src/Analysis/B2GDAS/test/combinedOutput/";
+
+	masspoint.push_back(make_pair("500",275.9*1.3/100000.0));
+	masspoint.push_back(make_pair("750",62.41*1.3/100000.0));
+	masspoint.push_back(make_pair("1000",20.05*1.3/98560.0));
+	masspoint.push_back(make_pair("2000",0.9528*1.3/100000.0));
+	masspoint.push_back(make_pair("2500",0.3136*1.3/100000.0));
+	masspoint.push_back(make_pair("3000",0.1289*1.3/99755.0));
+	masspoint.push_back(make_pair("3500",0.05452*1.3/99508.0));
+	masspoint.push_back(make_pair("4000",0.02807*1.3/99136.0));
+	masspoint.push_back(make_pair("4500",0.01603*1.3/99597.0));
+	masspoint.push_back(make_pair("5000",0.009095*1.3/98413.0));
 
 	backgrounds.push_back(make_pair("WJetsToLNu_Wpt-0To50.root",(1.0*57280.0)/(99983076.0*0.34)));
 	backgrounds.push_back(make_pair("WJetsToLNu_Wpt-50To100.root",(1.0*3258.0)/(67082709.0*0.36)));
@@ -51,8 +85,12 @@ void background_plotter(int rebin = 2, bool verbose = false, double lumi=36000.0
 	datas.push_back("SingleElectron_2016_All.root");
 	datas.push_back("singleMuon_ALL.root");
 
-	leptontype.push_back("electron");
-	leptontype.push_back("muon");
+	// channel.push_back("0Top1BEle");
+	// channel.push_back("0Top1BMu");
+	// channel.push_back("1Top0BEle");
+	channel.push_back("1Top0BMu");
+	channel.push_back("1Top1BEle");
+	channel.push_back("1Top1BMu");
 
 	histos.push_back("h_mttbar");
 	// histos.push_back("h_mttbar_jes_down");
@@ -64,81 +102,85 @@ void background_plotter(int rebin = 2, bool verbose = false, double lumi=36000.0
 	// histos.push_back("h_mttbar_elec_down");
 	// histos.push_back("h_mttbar_elec_up");
 
-	for (unsigned l=0; l<leptontype.size(); l++){
-	//Get ttbar and background hists
-	TFile* f_ttbar = TFile::Open("output/" + leptontype[l] + "/background/ttbar_ALL.root");
-		for (unsigned h=0; h<histos.size(); h++){
-			TFile* f_back = TFile::Open("output/" + leptontype[l] + "/background/" + backgrounds[0].first);
-			TH1D* h_ttbar = (TH1D*) f_ttbar->Get(histos[h]); h_ttbar->Scale(lumi*831.76/77081156.0);
-			if (verbose) cout<<"output/" + leptontype[l] + "/background/ttbar_ALL.root"<<" "<<h_ttbar->GetEntries()<<endl;
-			TH1D* h_back = (TH1D*) f_back->Get(histos[h]); h_back->Scale(lumi*backgrounds[0].second);
-			if (verbose) cout<<"output/" + leptontype[l] + "/background/" + backgrounds[0].first<<" "<<h_back->GetEntries()<<endl;
 
-			for (unsigned b=1; b<backgrounds.size(); b++){
-			TFile* f_back = TFile::Open("output/" + leptontype[l] + "/background/" + backgrounds[b].first);
-			TH1D* temp = (TH1D*) f_back->Get(histos[h]); 
-			if (verbose) cout<<"output/" + leptontype[l] + "/background/" + backgrounds[b].first<<" "<<temp->GetEntries()<<endl;
-			temp->Scale(lumi*backgrounds[b].second);
-			// new TCanvas(); temp->Draw();
-			h_back->Add(temp);
+	for (unsigned m=0; m<masspoint.size(); m++){
 
+		for (unsigned l=0; l<channel.size(); l++){
+		//Get ttbar and background hists
+		TFile* f_ttbar = TFile::Open(basepath + channel[l] + "/background/ttbar_ALL.root");
+			for (unsigned h=0; h<histos.size(); h++){
+				TFile* f_back = TFile::Open(basepath + channel[l] + "/background/" + backgrounds[0].first);
+				TH1D* h_ttbar = (TH1D*) f_ttbar->Get(histos[h]); h_ttbar->Scale(lumi*831.76/77081156.0);
+				if (verbose) cout<<basepath + channel[l] + "/background/ttbar_ALL.root"<<" "<<h_ttbar->GetEntries()<<endl;
+				TH1D* h_back = (TH1D*) f_back->Get(histos[h]); h_back->Scale(lumi*backgrounds[0].second);
+				if (verbose) cout<<basepath + channel[l] + "/background/" + backgrounds[0].first<<" "<<h_back->GetEntries()<<endl;
+
+				for (unsigned b=1; b<backgrounds.size(); b++){
+					TFile* f_back = TFile::Open(basepath + channel[l] + "/background/" + backgrounds[b].first);
+					TH1D* temp = (TH1D*) f_back->Get(histos[h]); 
+					if (verbose) cout<<basepath + channel[l] + "/background/" + backgrounds[b].first<<" "<<temp->GetEntries()<<endl;
+					temp->Scale(lumi*backgrounds[b].second);
+					// new TCanvas(); temp->Draw();
+					h_back->Add(temp);
+
+				}
+
+				//Get signal
+				TFile* f_signal = TFile::Open(basepath + channel[l] + Form("/signal/rsg_%s.root",masspoint[m].first.Data()));
+				TH1D* h_signal = (TH1D*) f_signal->Get(histos[h]); h_signal->Scale(lumi*masspoint[m].second);
+				if (verbose) cout<<basepath + channel[l] + Form("/signal/rsg_%s.root",masspoint[m].first.Data())<<" "<<h_signal->GetEntries()<<endl;
+				//Get data hist
+				TFile* f_data = TFile::Open(basepath + channel[l] + "/data/" + datas[0]);
+
+				TH1D* h_data = (TH1D*) f_data->Get(histos[h]);
+
+				for (unsigned d=1; d<datas.size(); d++){
+					f_data = TFile::Open(basepath + channel[l] + "/data/" + datas[d]);
+
+					h_data->Add((TH1D*) f_data->Get(histos[h]));
+
+				}
+
+				if (rebin){
+					h_data->Rebin(rebin);
+					h_ttbar->Rebin(rebin);
+					h_signal->Rebin(rebin);
+					h_back->Rebin(rebin);
+				}
+
+				//Make stack
+				TCanvas* c = new TCanvas("c_" + channel[l] + "_" + histos[h] + "_" + masspoint[m].first, channel[l] + "_" + histos[h], 800,600);
+				THStack* stack = new THStack(((TString) c->GetName()) + "_stack", ((TString) c->GetTitle()) + ";" + h_ttbar->GetXaxis()->GetTitle() + ";" + h_ttbar->GetYaxis()->GetTitle());
+				stack->SetMinimum(0);
+				h_back->SetFillColor(kGreen);
+				stack->Add(h_back);
+				h_ttbar->SetFillColor(kRed);
+				stack->Add(h_ttbar);
+				h_data->SetMarkerStyle(2);
+				stack->Draw("hist");
+				h_data->SetMarkerStyle(8);
+				h_data->Draw("samepe");
+				h_signal->SetLineWidth(3);
+				h_signal->Draw("samehist");
+				TLegend* leg = new TLegend(0.55,0.55,0.9,0.9);
+				leg->AddEntry(h_ttbar,"TTbar","f");
+				leg->AddEntry(h_back,"Other backgrounds","f");
+				leg->AddEntry(h_data,"Data","p");
+				leg->AddEntry(h_signal,"Signal","l");
+				leg->Draw();
+				output->cd();
+				c->Write();
+				c->SaveAs("stack_plots/" + ((TString) c->GetName()) + ".png");
+
+				cout<<channel[l]<<endl;
+				cout<<"\tData: "<<h_data->Integral()<<endl;
+				cout<<"\tBackground: "<<h_back->Integral()<<endl;
+				cout<<"\tttbar: "<<h_ttbar->Integral()<<endl;
+				cout<<"\tSignal: "<<h_signal->Integral()<<endl;
 			}
-
-			//Get signal
-			TFile* f_signal = TFile::Open("output/" + leptontype[l] + "/signal/rsg_3000.root");
-			TH1D* h_signal = (TH1D*) f_signal->Get(histos[h]); h_signal->Scale(lumi*0.1289*1.3/99755.0);
-			if (verbose) cout<<"output/" + leptontype[l] + "/signal/rsg_3000.root"<<" "<<h_signal->GetEntries()<<endl;
-			//Get data hist
-			TFile* f_data = TFile::Open("output/" + leptontype[l] + "/data/" + datas[0]);
-
-			TH1D* h_data = (TH1D*) f_data->Get(histos[h]);
-
-			for (unsigned d=1; d<datas.size(); d++){
-			f_data = TFile::Open("output/" + leptontype[l] + "/data/" + datas[d]);
-
-			h_data->Add((TH1D*) f_data->Get(histos[h]));
-
-			}
-
-			if (rebin){
-				h_data->Rebin(rebin);
-				h_ttbar->Rebin(rebin);
-				h_signal->Rebin(rebin);
-				h_back->Rebin(rebin);
-			}
-
-			//Make stack
-			TCanvas* c = new TCanvas("c_" + leptontype[l] + "_" + histos[h], "c_" + leptontype[l] + "_" + histos[h], 800,600);
-			THStack* stack = new THStack(histos[h] + "_stack", histos[h] + ";" + h_ttbar->GetXaxis()->GetTitle() + ";" + h_ttbar->GetYaxis()->GetTitle());
-			stack->SetMinimum(0);
-			h_back->SetFillColor(kGreen);
-			stack->Add(h_back);
-			h_ttbar->SetFillColor(kRed);
-			stack->Add(h_ttbar);
-			h_data->SetMarkerStyle(2);
-			stack->Draw("hist");
-			h_data->SetMarkerStyle(8);
-			h_data->Draw("samepe");
-			h_signal->SetLineWidth(3);
-			h_signal->Draw("samehist");
-			TLegend* leg = new TLegend(0.55,0.55,0.9,0.9);
-			leg->AddEntry(h_ttbar,"TTbar","f");
-			leg->AddEntry(h_back,"Other backgrounds","f");
-			leg->AddEntry(h_data,"Data","p");
-			leg->AddEntry(h_signal,"Signal","l");
-			leg->Draw();
-			output->cd();
-			c->Write();
-			c->SaveAs("stack_plots/" + ((TString) c->GetName()) + ".png");
-
-
-			cout<<"Data: "<<h_data->Integral()<<endl;
-			cout<<"Background: "<<h_back->Integral()<<endl;
-			cout<<"ttbar: "<<h_ttbar->Integral()<<endl;
-			cout<<"Signal: "<<h_signal->Integral()<<endl;
 		}
-	}
 
 	output->Write();
 
+	}
 }
