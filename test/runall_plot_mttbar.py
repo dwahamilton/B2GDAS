@@ -13,9 +13,9 @@ from plot_mttbar import plot_mttbar
 import os
 
 file_list = []
-# file_list.append(["SingleElectron_2016_All.root","data"])
-# file_list.append(["singleMuon_ALL.root","data"])
-# file_list.append(["ttbar_ALL.root","background"])
+file_list.append(["SingleElectron_2016_All.root","data"])
+file_list.append(["singleMuon_ALL.root","data"])
+file_list.append(["ttbar_ALL.root","background"])
 # file_list.append(["WJetsToLNu_Wpt-0To50.root","background"])
 # file_list.append(["WJetsToLNu_Wpt-50To100.root","background"])
 # file_list.append(["WJetsToLNu_Pt-100To250.root","background"])
@@ -26,7 +26,7 @@ file_list = []
 # file_list.append(["QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8.root","background"])
 # file_list.append(["QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8.root","background"])
 # file_list.append(["QCD_Pt_1400to1800_TuneCUETP8M1_13TeV_pythia8.root","background"])
-file_list.append(["QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8.root","background"])
+# file_list.append(["QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8.root","background"])
 # file_list.append(["QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8.root","background"])
 # file_list.append(["QCD_Pt_1800to2400_TuneCUETP8M1_13TeV_pythia8.root","background"])
 # file_list.append(["QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8.root","background"])
@@ -66,7 +66,7 @@ for output in outputs:
 		os.mkdir(output)
 
 for file,file_type in file_list:
-	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "--elec_unc", str(0), "--muon_unc", str(0), "output/electron/" + file_type + "/" + file,"--leptontype",str(0)])
-	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "--elec_unc", str(0), "--muon_unc", str(0), "output/muon/" + file_type + "/" + file,"--leptontype",str(1)])
+	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "output/electron/" + file_type + "/" + file, "--elec_unc", str(0), "--muon_unc", str(0), "--leptontype",str(0)])
+	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "output/muon/" + file_type + "/" + file, "--elec_unc", str(0), "--muon_unc", str(0), "--leptontype",str(1)])
 
 

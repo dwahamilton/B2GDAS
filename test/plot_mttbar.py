@@ -273,6 +273,7 @@ def plot_mttbar(argv) :
 
             new_pileup = h_purw.GetBinContent(int(SemiLepNvtx[0])+1)
 
+            new_weight = new_pileup*GenWeight[0]/abs(GenWeight[0])
             # Muons only for now
             if options.leptontype == 1:
                 if LeptonType[0] != 13 :
@@ -280,9 +281,9 @@ def plot_mttbar(argv) :
                 if SemiLeptTrig[0] != 1  :
                     continue
                 new_weight*=MuonTrkWeight[0]
-                if (muon_unc==1):
+                if (options.muon_unc==1):
                     lepweight -= LeptonIDWeightUnc[0]
-                elif (muon_unc==2):
+                elif (options.muon_unc==2):
                     lepweight += LeptonIDWeightUnc[0]    
 
 
@@ -291,12 +292,12 @@ def plot_mttbar(argv) :
                     continue
                 if SemiLeptTrig[1] != 1  :
                     continue    
-                if (elec_unc==1):
+                if (options.elec_unc==1):
                     lepweight -= LeptonIDWeightUnc[0]
-                elif (elec_unc==2):
+                elif (options.elec_unc==2):
                     lepweight += LeptonIDWeightUnc[0]    
 
-            new_weight = new_pileup*GenWeight[0]/abs(GenWeight[0])*lepweight
+            new_weight*=lepweight
 
             hadTopCandP4 = ROOT.TLorentzVector()
             hadTopCandP4.SetPtEtaPhiM( FatJetPt[0], FatJetEta[0], FatJetPhi[0], FatJetMass[0])
