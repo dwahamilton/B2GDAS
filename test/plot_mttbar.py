@@ -42,9 +42,8 @@ def plot_mttbar(argv) :
     #                  help='Is this Data?')
     parser.add_option('--category', type='string',action = 'store',
 		      dest='category',
-	              default = False,
-		      help = 'btag is for 0 top tags, 1 b tag and  toptag is for 
-		      1 top tag 0 b tags')
+	              default = 'All',
+		      help = 'btag is for 0 top tags, 1 b tag and  toptag is for 1 top tag 0 b tags')
     (options, args) = parser.parse_args(argv)
     argv = []
 
@@ -323,17 +322,21 @@ def plot_mttbar(argv) :
             pass2DCut = LeptonPtRel[0] > 55. or LeptonDRMin[0] > 0.4
             passBtag = bdisc > 0.7
 
-	    if options.category == False:
+	    if options.category == 'All':
             	if not passKin or not pass2DCut or not passBtag or not passTopTag :
                     continue
 
 	    if options.category == 'btag':
-		if passBtag and not TopTag:
+		if not passKin or not pass2DCut or not passBtag:
 	 	    continue
+		if passTopTag:
+		    continue
 
 	    if options.category == 'toptag':
-		if passTopTag and not Btag:
+		if not passKin or not pass2DCut or not passTopTag:
 		    continue 
+		if passBtag:
+		    continue
 
 
             ##  ____  __.__                              __  .__         __________
