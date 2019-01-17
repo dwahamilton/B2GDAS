@@ -1,11 +1,23 @@
-void background_plotter(double lumi=36000.0){
+void background_plotter(int rebin = 2, bool verbose = false, double lumi=36000.0){
 
-	TFile* output = new TFile("background_plots.root","RECREATE");
+	TFile* output = new TFile("stack_plots/stack_plots.root","RECREATE");
 
 	vector<pair<TString,double> > backgrounds;
 	vector<TString> datas;
 	vector<TString> histos;
 	vector<TString> leptontype;
+	vector<pair<TString,double> > masspoint;
+
+	// masspoint.push_back(make_pair("500",275.9*1.3/100000.0));
+	// masspoint.push_back(make_pair("750",62.41*1.3/100000.0));
+	// masspoint.push_back(make_pair("1000",20.05*1.3/98560.0));
+	// masspoint.push_back(make_pair("2000",));
+	// masspoint.push_back(make_pair("2500",));
+	// masspoint.push_back(make_pair("3000",));
+	// masspoint.push_back(make_pair("3500",));
+	// masspoint.push_back(make_pair("4000",));
+	// masspoint.push_back(make_pair("4500",));
+	// masspoint.push_back(make_pair("5000",));
 
 	backgrounds.push_back(make_pair("WJetsToLNu_Wpt-0To50.root",(1.0*57280.0)/(99983076.0*0.34)));
 	backgrounds.push_back(make_pair("WJetsToLNu_Wpt-50To100.root",(1.0*3258.0)/(67082709.0*0.36)));
@@ -19,14 +31,14 @@ void background_plotter(double lumi=36000.0){
 	backgrounds.push_back(make_pair("singletop_tWchan_antitop.root",35.6/6952830.0));
 	backgrounds.push_back(make_pair("singletop_tWchan_top.root",35.6/6933094.0));
 
-	// backgrounds.push_back(make_pair("QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8.root","background"))
-	// backgrounds.push_back(make_pair("QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8.root","background"))
-	// backgrounds.push_back(make_pair("QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8.root","background"))
-	// backgrounds.push_back(make_pair("QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8.root","background"))
-	// backgrounds.push_back(make_pair("QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8.root","background"))
-	// backgrounds.push_back(make_pair("QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8.root","background"))
+	// backgrounds.push_back(make_pair("QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8.root",1.0));
+	// backgrounds.push_back(make_pair("QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8.root",1.0));
+	// backgrounds.push_back(make_pair("QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8.root",1.0));
+	// backgrounds.push_back(make_pair("QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8.root",1.0));
+	// backgrounds.push_back(make_pair("QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8.root",1.0));
+	// backgrounds.push_back(make_pair("QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8.root",1.0));
+	// backgrounds.push_back(make_pair("QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8.root",7823.0/4150588.0));
 
-	backgrounds.push_back(make_pair("QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8.root",7823.0/4150588.0));
 	backgrounds.push_back(make_pair("QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8.root",648.2/3959986.0));
 	backgrounds.push_back(make_pair("QCD_Pt_600to800_TuneCUETP8M1_13TeV_pythia8.root",186.9/3896412.0));
 	backgrounds.push_back(make_pair("QCD_Pt_800to1000_TuneCUETP8M1_13TeV_pythia8.root",32.29/3992112.0));
@@ -43,7 +55,14 @@ void background_plotter(double lumi=36000.0){
 	leptontype.push_back("muon");
 
 	histos.push_back("h_mttbar");
-
+	// histos.push_back("h_mttbar_jes_down");
+	// histos.push_back("h_mttbar_jes_up");
+	// histos.push_back("h_mttbar_jer_down");
+	// histos.push_back("h_mttbar_jer_up");
+	// histos.push_back("h_mttbar_muon_down");
+	// histos.push_back("h_mttbar_muon_up");
+	// histos.push_back("h_mttbar_elec_down");
+	// histos.push_back("h_mttbar_elec_up");
 
 	for (unsigned l=0; l<leptontype.size(); l++){
 	//Get ttbar and background hists
@@ -51,34 +70,24 @@ void background_plotter(double lumi=36000.0){
 		for (unsigned h=0; h<histos.size(); h++){
 			TFile* f_back = TFile::Open("output/" + leptontype[l] + "/background/" + backgrounds[0].first);
 			TH1D* h_ttbar = (TH1D*) f_ttbar->Get(histos[h]); h_ttbar->Scale(lumi*831.76/77081156.0);
-			cout<<"output/" + leptontype[l] + "/background/ttbar_ALL.root"<<" "<<h_ttbar->GetEntries()<<endl;
+			if (verbose) cout<<"output/" + leptontype[l] + "/background/ttbar_ALL.root"<<" "<<h_ttbar->GetEntries()<<endl;
 			TH1D* h_back = (TH1D*) f_back->Get(histos[h]); h_back->Scale(lumi*backgrounds[0].second);
-			cout<<"output/" + leptontype[l] + "/background/" + backgrounds[0].first<<" "<<h_back->GetEntries()<<endl;
+			if (verbose) cout<<"output/" + leptontype[l] + "/background/" + backgrounds[0].first<<" "<<h_back->GetEntries()<<endl;
 
 			for (unsigned b=1; b<backgrounds.size(); b++){
 			TFile* f_back = TFile::Open("output/" + leptontype[l] + "/background/" + backgrounds[b].first);
 			TH1D* temp = (TH1D*) f_back->Get(histos[h]); 
-			cout<<"output/" + leptontype[l] + "/background/" + backgrounds[b].first<<" "<<temp->GetEntries()<<endl;
+			if (verbose) cout<<"output/" + leptontype[l] + "/background/" + backgrounds[b].first<<" "<<temp->GetEntries()<<endl;
 			temp->Scale(lumi*backgrounds[b].second);
 			// new TCanvas(); temp->Draw();
 			h_back->Add(temp);
 
 			}
 
-			//Make stack
-			THStack* stack = new THStack(histos[h] + "_stack", histos[h] + ";" + h_ttbar->GetXaxis()->GetTitle() + ";" + h_ttbar->GetYaxis()->GetTitle());
-			// stack->GetXaxis()->SetTitle(h_ttbar->GetXaxis()->GetTitle());
-			// stack->GetYaxis()->SetTitle(h_ttbar->GetYaxis()->GetTitle());
-
-			h_ttbar->SetFillColor(kRed);
-			stack->Add(h_ttbar);
-			h_back->SetFillColor(kGreen);
-			stack->Add(h_back);
-
-			output->cd();
-			h_ttbar->Write();
-			// stack->Write();
-
+			//Get signal
+			TFile* f_signal = TFile::Open("output/" + leptontype[l] + "/signal/rsg_3000.root");
+			TH1D* h_signal = (TH1D*) f_signal->Get(histos[h]); h_signal->Scale(lumi*0.1289*1.3/99755.0);
+			if (verbose) cout<<"output/" + leptontype[l] + "/signal/rsg_3000.root"<<" "<<h_signal->GetEntries()<<endl;
 			//Get data hist
 			TFile* f_data = TFile::Open("output/" + leptontype[l] + "/data/" + datas[0]);
 
@@ -91,16 +100,42 @@ void background_plotter(double lumi=36000.0){
 
 			}
 
+			if (rebin){
+				h_data->Rebin(rebin);
+				h_ttbar->Rebin(rebin);
+				h_signal->Rebin(rebin);
+				h_back->Rebin(rebin);
+			}
+
+			//Make stack
 			TCanvas* c = new TCanvas("c_" + leptontype[l] + "_" + histos[h], "c_" + leptontype[l] + "_" + histos[h], 800,600);
+			THStack* stack = new THStack(histos[h] + "_stack", histos[h] + ";" + h_ttbar->GetXaxis()->GetTitle() + ";" + h_ttbar->GetYaxis()->GetTitle());
+			stack->SetMinimum(0);
+			h_back->SetFillColor(kGreen);
+			stack->Add(h_back);
+			h_ttbar->SetFillColor(kRed);
+			stack->Add(h_ttbar);
+			h_data->SetMarkerStyle(2);
 			stack->Draw("hist");
-			h_data->Draw("same");
-			TLegend* leg = new TLegend(0.7,0.7,0.9,0.9);
+			h_data->SetMarkerStyle(8);
+			h_data->Draw("samepe");
+			h_signal->SetLineWidth(3);
+			h_signal->Draw("samehist");
+			TLegend* leg = new TLegend(0.55,0.55,0.9,0.9);
 			leg->AddEntry(h_ttbar,"TTbar","f");
 			leg->AddEntry(h_back,"Other backgrounds","f");
-			leg->AddEntry(h_data,"Data","l");
+			leg->AddEntry(h_data,"Data","p");
+			leg->AddEntry(h_signal,"Signal","l");
 			leg->Draw();
 			output->cd();
 			c->Write();
+			c->SaveAs("stack_plots/" + ((TString) c->GetName()) + ".png");
+
+
+			cout<<"Data: "<<h_data->Integral()<<endl;
+			cout<<"Background: "<<h_back->Integral()<<endl;
+			cout<<"ttbar: "<<h_ttbar->Integral()<<endl;
+			cout<<"Signal: "<<h_signal->Integral()<<endl;
 		}
 	}
 
