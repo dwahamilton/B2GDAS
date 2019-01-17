@@ -302,14 +302,31 @@ def plot_mttbar(argv) :
 
             new_weight*=lepweight
 
+            if "data" in options.file_out:
+                if jentry==0:
+                    print "Sample is data. Setting weights to 0"
+                new_weight=1.0
+
             hadTopCandP4 = ROOT.TLorentzVector()
             hadTopCandP4.SetPtEtaPhiM( FatJetPt[0], FatJetEta[0], FatJetPhi[0], FatJetMass[0])
             bJetCandP4 = ROOT.TLorentzVector()
             bJetCandP4.SetPtEtaPhiM( NearestAK4JetPt[0], NearestAK4JetEta[0], NearestAK4JetPhi[0], NearestAK4JetMass[0])
-            nuCandP4 = ROOT.TLorentzVector( )
+            nuCandP4 = ROOT.TLorentzVector()
             nuCandP4.SetPtEtaPhiM( SemiLepMETpt[0], 0, SemiLepMETphi[0], SemiLepMETpt[0] )
             theLepton = ROOT.TLorentzVector()
             theLepton.SetPtEtaPhiE( LeptonPt[0], LeptonEta[0], LeptonPhi[0], LeptonEnergy[0] ) # Assume massless
+
+            if (options.jes==1):
+                bJetCandP4*=NearestAK4JetJECUpSys[0]
+                hadTopCandP4*=NearestAK4JetJECUpSys[0]
+            elif (options.jes==2):
+                bJetCandP4*=NearestAK4JetJECDnSys[0]
+                hadTopCandP4*=NearestAK4JetJECDnSys[0]
+
+            FatJetPt[0]=hadTopCandP4.Pt()
+            FatJetMass[0]=hadTopCandP4.M()
+            NearestAK4JetPt[0]=bJetCandP4.Pt()
+            NearestAK4JetMass[0]=bJetCandP4.M()
 
 
             tau32 = FatJetTau32[0]
