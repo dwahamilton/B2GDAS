@@ -54,13 +54,13 @@ def plot_mttbar(argv) :
     h_PUWeight              = ROOT.TH1F("h_PUWeight", ";blah;blah", 200, 0, 50)
     h_FatJetRap             = ROOT.TH1F("h_FatJetRap", ";blah;blah", 200, 0, 500)
     h_FatJetEnergy          = ROOT.TH1F("h_FatJetEnergy", ";Fat Jet Energy [GeV];Entries", 250, 0, 5000)
-    h_FatJetBDisc           = ROOT.TH1F("h_FatJetBDisc", ";B Discriminant;Entries", 200, 0, 500)
+    h_FatJetBDisc           = ROOT.TH1F("h_FatJetBDisc", ";B Discriminant;Entries", 200, 0, 1)
     h_FatJetMass            = ROOT.TH1F("h_FatJetMass", ";Fat Jet Mass [GeV];Entries", 200, 0, 500)
     h_FatJetMassSoftDrop    = ROOT.TH1F("h_FatJetMassSoftDrop", ";Fat Jet SD Mass [GeV];Entries", 200, 0, 500)
     h_FatJetTau32           = ROOT.TH1F("h_FatJetTau32", ";Fat Jet #tau_{32};Entries", 200, 0, 1)
     #h_FatJetTau21           = ROOT.TH1F("h_FatJetTau21", ";blah;Entries", 200, 0, 500)
     #h_FatJetSDBDiscW        = ROOT.TH1F("h_FatJetSDBDiscW", ";blah;Entries", 200, 0, 500)
-    h_FatJetSDBDiscB        = ROOT.TH1F("h_FatJetSDBDiscB", ";Fat SD Jet B Discriminant;Entries", 200, 0, 500)
+    h_FatJetSDBDiscB        = ROOT.TH1F("h_FatJetSDBDiscB", ";Fat SD Jet B Discriminant;Entries", 200, 0, 1)
     h_FatJetSDsubjetWpt     = ROOT.TH1F("h_FatJetSDsubjetWpt", ";Fat SD Jet W Pt [GeV];Entries", 200, 0, 500)
     h_FatJetSDsubjetWmass   = ROOT.TH1F("h_FatJetSDsubjetWmass", ";Fat SD Jet W mass [GeV];Entries", 200, 0, 500)
     h_FatJetSDsubjetBpt     = ROOT.TH1F("h_FatJetSDsubjetBpt", ";Fat SD Jet B Pt [GeV];Entries", 200, 0, 500)
@@ -76,7 +76,7 @@ def plot_mttbar(argv) :
     h_LeptonEnergy          = ROOT.TH1F("h_LeptonEnergy", ";Lepton Energy [GeV];Entries", 200, 0, 500)
     h_LeptonIso             = ROOT.TH1F("h_LeptonIso", ";Lepton Iso;Entries", 200, 0, 500)
     h_LeptonPtRel           = ROOT.TH1F("h_LeptonPtRel", ";Lepton PtRel [GeV];Entries", 200, 0, 500)
-    #h_LeptonDRMin           = ROOT.TH1F("h_LeptonDRMin", ";blah;Entries", 200, 0, 500)
+    h_LeptonDRMin           = ROOT.TH1F("h_LeptonDRMin", ";LeptonDRMin;Entries", 200, 0, 5)
     h_SemiLepMETpt          = ROOT.TH1F("h_SemiLepMETpt", ";MET Pt [GeV];Entries", 200, 0, 500)
     h_SemiLepMETphi         = ROOT.TH1F("h_SemiLepMETphi", ";MET #phi;Entries", 200, -3.14, 3.14)
     h_SemiLepNvtx           = ROOT.TH1F("h_SemiLepNvtx", ";N Vertex;Entries", 25, -0.5, 19.5)
@@ -273,12 +273,12 @@ def plot_mttbar(argv) :
             bdisc = NearestAK4JetBDisc[0]
 
             passKin = hadTopCandP4.Perp() > 400.
-            passTopTag = tau32 < 0.6 and mass_sd > 110. and mass_sd < 250.
+            passTopTag = mass_sd > 75 #tau32 < 0.6 and mass_sd > 110. and mass_sd < 250.
 
-            pass2DCut = LeptonPtRel[0] > 55. or LeptonDRMin[0] > 0.4
-            passBtag = bdisc > 0.7
+            #pass2DCut = LeptonPtRel[0] > 55. or LeptonDRMin[0] > 0.4
+            #passBtag = bdisc > 0.7
 
-            if not passKin or not pass2DCut or not passBtag or not passTopTag :
+            if not passKin or not passTopTag:# or not pass2DCut or not passBtag or not passTopTag :
                 continue
 
 
