@@ -260,6 +260,7 @@ def plot_mttbar(argv) :
 
         entries = t.GetEntriesFast()
         print 'Processing tree ' + str(itree)
+        data_message = False    
 
         eventsToRun = entries
         for jentry in xrange( eventsToRun ):
@@ -302,9 +303,11 @@ def plot_mttbar(argv) :
 
             new_weight*=lepweight
 
-            if "data" in options.file_out:
-                if jentry==0:
-                    print "Sample is data. Setting weights to 0"
+
+            if options.file_out.find("data") != -1:
+                if data_message==False:
+                    print "Sample is data. Setting weights to 1"
+                    data_message=True
                 new_weight=1.0
 
             hadTopCandP4 = ROOT.TLorentzVector()
