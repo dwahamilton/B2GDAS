@@ -236,7 +236,7 @@ def plot_mttbar(argv) :
         eventsToRun = entries
         for jentry in xrange( eventsToRun ):
             if jentry % 100000 == 0 :
-                print 'processing ' + str(jentry)
+                print 'processing ' + str(jentry) + '/' + str(eventsToRun)
             # get the next tree in the chain and verify
             ientry = t.GetEntry( jentry )
             if ientry < 0:
