@@ -42,12 +42,12 @@ file_list = []
 
 # file_list.append(["rsg_500.root","signal"])
 # file_list.append(["rsg_750.root","signal"])
-file_list.append(["rsg_1000.root","signal"])
+# file_list.append(["rsg_1000.root","signal"])
 # file_list.append(["rsg_1250.root","signal"])
 # file_list.append(["rsg_1500.root","signal"])
 # file_list.append(["rsg_2000.root","signal"])
 # file_list.append(["rsg_2500.root","signal"])
-# file_list.append(["rsg_3000.root","signal"])
+file_list.append(["rsg_3000.root","signal"])
 # file_list.append(["rsg_3500.root","signal"])
 # file_list.append(["rsg_4000.root","signal"])
 # file_list.append(["rsg_4500.root","signal"])
@@ -67,7 +67,7 @@ for output in outputs:
 		os.mkdir(output)
 
 for file,file_type in file_list:
-	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "output/electron/" + file_type + "/" + file, "--elec_unc", str(0), "--muon_unc", str(0), "--leptontype",str(0)])
-	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "output/muon/" + file_type + "/" + file, "--elec_unc", str(0), "--muon_unc", str(0), "--leptontype",str(1)])
+	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "output/electron/" + file_type + "/" + file, "--leptontype",str(0)])
+	plot_mttbar(["--file_in", "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/B2GTTbar/" + file, "--file_out", "output/muon/" + file_type + "/" + file, "--leptontype",str(1)])
 
 

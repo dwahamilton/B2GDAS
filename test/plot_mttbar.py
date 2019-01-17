@@ -24,18 +24,6 @@ def plot_mttbar(argv) :
     parser.add_option('--leptontype', type='int', action='store',
                       dest='leptontype',
                       help='0 is electron 1 is muon')
-    parser.add_option('--elec_unc', type='int', action='store',
-                      dest='elec_unc',
-                      help='0 for no lepid uncertainty, 1 for up, 2 for down')
-    parser.add_option('--muon_unc', type='int', action='store',
-                      dest='muon_unc',
-                      help='0 for no lepid uncertainty, 1 for up, 2 for down')
-    parser.add_option('--jer', type='int', action='store',
-                      dest='jer',
-                      help='0 for no jer uncertainty, 1 for up, 2 for down')
-    parser.add_option('--jes', type='int', action='store',
-                      dest='jes',
-                      help='0 for no jes uncertainty, 1 for up, 2 for down')
     #parser.add_option('--isData', action='store_true',
     #                  dest='isData',
     #                  default = False,
@@ -54,6 +42,14 @@ def plot_mttbar(argv) :
 
     fout= ROOT.TFile(options.file_out, "RECREATE")
     h_mttbar = ROOT.TH1F("h_mttbar", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+    h_mttbar_jes_up = ROOT.TH1F("h_mttbar_jes_up", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+    h_mttbar_jes_down = ROOT.TH1F("h_mttbar_jes_down", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+    h_mttbar_jer_up = ROOT.TH1F("h_mttbar_jer_up", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+    h_mttbar_jer_down = ROOT.TH1F("h_mttbar_jer_down", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+    h_mttbar_muon_up = ROOT.TH1F("h_mttbar_muon_up", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+    h_mttbar_muon_down = ROOT.TH1F("h_mttbar_muon_down", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+    h_mttbar_elec_up = ROOT.TH1F("h_mttbar_elec_up", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
+    h_mttbar_elec_down = ROOT.TH1F("h_mttbar_elec_down", ";m_{t#bar{t}} (GeV);Number", 100, 0, 5000)
     #h_mtopHad = ROOT.TH1F("h_mtopHad", ";m_{jet} (GeV);Number", 100, 0, 400)
     #h_mtopHadGroomed = ROOT.TH1F("h_mtopHadGroomed", ";Groomed m_{jet} (GeV);Number", 100, 0, 400)
     #Pt, Eta, Phi Spectra
@@ -256,6 +252,14 @@ def plot_mttbar(argv) :
         t.SetBranchStatus ('MuonTrkWeight'      , 1)
         t.SetBranchStatus ('MuonTrkWeightUnc'      , 1)
         t.SetBranchStatus ('SemiLepNvtx'         ,1)
+        t.SetBranchStatus ('NearestAK4JetJECUpSys',1)
+        t.SetBranchStatus ('NearestAK4JetJECDnSys',1)
+        t.SetBranchStatus ('NearestAK4JetJERUpSys',1)
+        t.SetBranchStatus ('NearestAK4JetJERDnSys',1)
+        t.SetBranchStatus ('FatJetJECUpSys',1)
+        t.SetBranchStatus ('FatJetJECDnSys',1)
+        t.SetBranchStatus ('FatJetJERUpSys',1)
+        t.SetBranchStatus ('FatJetJERDnSys',1)
 
 
         entries = t.GetEntriesFast()
@@ -285,10 +289,10 @@ def plot_mttbar(argv) :
                 if SemiLeptTrig[0] != 1  :
                     continue
                 new_weight*=MuonTrkWeight[0]
-                if (options.muon_unc==1):
-                    lepweight -= LeptonIDWeightUnc[0]
-                elif (options.muon_unc==2):
-                    lepweight += LeptonIDWeightUnc[0]    
+                # if (options.muon_unc==1):
+                #     lepweight -= LeptonIDWeightUnc[0]
+                # elif (options.muon_unc==2):
+                #     lepweight += LeptonIDWeightUnc[0]    
 
 
             if options.leptontype == 0:
@@ -296,10 +300,10 @@ def plot_mttbar(argv) :
                     continue
                 if SemiLeptTrig[1] != 1  :
                     continue    
-                if (options.elec_unc==1):
-                    lepweight -= LeptonIDWeightUnc[0]
-                elif (options.elec_unc==2):
-                    lepweight += LeptonIDWeightUnc[0]    
+                # if (options.elec_unc==1):
+                #     lepweight -= LeptonIDWeightUnc[0]
+                # elif (options.elec_unc==2):
+                #     lepweight += LeptonIDWeightUnc[0]    
 
             new_weight*=lepweight
 
@@ -319,13 +323,6 @@ def plot_mttbar(argv) :
             theLepton = ROOT.TLorentzVector()
             theLepton.SetPtEtaPhiE( LeptonPt[0], LeptonEta[0], LeptonPhi[0], LeptonEnergy[0] ) # Assume massless
 
-            if (options.jes==1):
-                bJetCandP4*=NearestAK4JetJECUpSys[0]
-                hadTopCandP4*=NearestAK4JetJECUpSys[0]
-            elif (options.jes==2):
-                bJetCandP4*=NearestAK4JetJECDnSys[0]
-                hadTopCandP4*=NearestAK4JetJECDnSys[0]
-
             FatJetPt[0]=hadTopCandP4.Pt()
             FatJetMass[0]=hadTopCandP4.M()
             NearestAK4JetPt[0]=bJetCandP4.Pt()
@@ -336,13 +333,13 @@ def plot_mttbar(argv) :
             mass_sd = FatJetMassSoftDrop[0]
             bdisc = NearestAK4JetBDisc[0]
 
-            passKin = hadTopCandP4.Perp() > 400.
+            # passKin = hadTopCandP4.Perp() > 400.
             passTopTag = tau32 < 0.6 and mass_sd > 110. and mass_sd < 250.
 
             pass2DCut = LeptonPtRel[0] > 55. or LeptonDRMin[0] > 0.4
             passBtag = bdisc > 0.7
 
-            if not passKin or not pass2DCut or not passBtag or not passTopTag :
+            if not pass2DCut or not passBtag or not passTopTag :
                 continue
 
 
@@ -367,12 +364,60 @@ def plot_mttbar(argv) :
             else :
                 nuCandP4.SetPz( nuz1.real )
 
-            lepTopCandP4 = nuCandP4 + theLepton + bJetCandP4
+            for s in xrange(5):
+                if s==0:
+                    bJetDummy = bJetCandP4
+                    tJetDummy = hadTopCandP4
+                elif s==1:
+                    bJetDummy = bJetCandP4*NearestAK4JetJECUpSys[0]
+                    tJetDummy = hadTopCandP4*FatJetJECUpSys[0]
+                elif s==2:
+                    bJetDummy = bJetCandP4*NearestAK4JetJECDnSys[0]
+                    tJetDummy = hadTopCandP4*FatJetJECDnSys[0]
+                elif s==3:
+                    bJetDummy = bJetCandP4*NearestAK4JetJERUpSys[0]
+                    tJetDummy = hadTopCandP4*FatJetJERUpSys[0]
+                elif s==4:
+                    bJetDummy = bJetCandP4*NearestAK4JetJERDnSys[0]
+                    tJetDummy = hadTopCandP4*FatJetJERDnSys[0]
 
-            ttbarCand = hadTopCandP4 + lepTopCandP4
-            mttbar = ttbarCand.M()
+                passKin = tJetDummy.Perp() > 400.
+                if passKin:
 
-            h_mttbar.Fill( mttbar, new_weight )
+                    lepTopCandP4 = nuCandP4 + theLepton + bJetDummy
+
+                    ttbarCand = tJetDummy + lepTopCandP4
+                    mttbar = ttbarCand.M()
+
+                    if s==0:
+                        h_mttbar.Fill( mttbar, new_weight )
+                        dummyweight_up = new_weight/lepweight*(lepweight+LeptonIDWeightUnc[0])
+                        dummyweight_down = new_weight/lepweight*(lepweight-LeptonIDWeightUnc[0])
+                        if options.leptontype==0:
+                            h_mttbar_elec_up.Fill( mttbar, dummyweight_up )
+                            h_mttbar_elec_down.Fill( mttbar, dummyweight_down )
+                            h_mttbar_muon_up.Fill( mttbar, new_weight )
+                            h_mttbar_muon_down.Fill( mttbar, new_weight )
+                        else:
+                            h_mttbar_muon_up.Fill( mttbar, dummyweight_up )
+                            h_mttbar_muon_down.Fill( mttbar, dummyweight_down )
+                            h_mttbar_elec_up.Fill( mttbar, new_weight )
+                            h_mttbar_elec_down.Fill( mttbar, new_weight )
+
+
+                    if s==1:
+                        h_mttbar_jes_up.Fill( mttbar, new_weight )
+                    if s==2:
+                        h_mttbar_jes_down.Fill( mttbar, new_weight )
+                    if s==3:
+                        h_mttbar_jer_up.Fill( mttbar, new_weight )
+                    if s==4:
+                        h_mttbar_jer_down.Fill( mttbar, new_weight )
+                    
+
+
+
+
             #h_mtopHadGroomed.Fill( mass_sd, new_weight )
             #h_mtopHad.Fill( hadTopCandP4.M(), new_weight )
             #h_SemiLeptTrig.Fill( SemiLeptTrig[0], new_weight )
