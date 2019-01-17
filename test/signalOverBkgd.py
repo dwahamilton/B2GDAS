@@ -12,18 +12,22 @@ parser.add_option('--background_in', type='string', action='store',
                   dest='background_in',
                   help='Input background file')
 
-parser.add_option('--file_out', type='string', action='store',
-                  dest='file_out',
-                  help='Output file')
-
 parser.add_option('--histo', type='string', action='store',
                   dest='histo',
                   help='Variable for S/B')
+
+parser.add_option('--backward', type='int', action='store',
+                  dest='backward',
+                  default=0,
+                  help='Backward direction of integration')
     
 (options, args) = parser.parse_args()
 argv = []
 
-outfile = ROOT.TFile(options.file_out, "RECREATE")
+sigName = options.signal_in.split("/")[-1].split(".")[0]
+bkgdName = options.background_in.split("/")[-1].split(".")[0]
+
+outfile = ROOT.TFile("%s_Over_%s_%s.root"%(sigName,bkgdName,options.histo), "RECREATE")
 fsig = ROOT.TFile.Open(options.signal_in)
 fbkgd = ROOT.TFile.Open(options.background_in)
 
@@ -41,13 +45,19 @@ soverb = ROOT.TH1D("Signal over Background", ";%s;S/#sqrt{B}"%(xaxisTitle),nbins
 
 runningSig = 0
 runningBkgd = 0
-for abin in xrange(nbins):
+for abin in xrange(nbins+2):
+    if options.backward:
+        abin = nbins+1 - abin
     runningSig += fsigHist.GetBinContent(abin)
     runningBkgd += fbkgdHist.GetBinContent(abin)
 
     if runningBkgd == 0:
         continue 
     else: 
-        soverb.SetBinContent(abin, runningSig/math.sqrt(runningBkgd))
+        soverb.SetBinContent(abin, runningSig/(1+math.sqrt(runningBkgd)))
 
 outfile.Write()
+if options.backward:
+    soverb.SaveAs("%s_Over_%s_%s_Backward.C"%(sigName, bkgdName, options.histo))
+else:
+    soverb.SaveAs("%s_Over_%s_%s_Upward.C"%(sigName, bkgdName, options.histo))
