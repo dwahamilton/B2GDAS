@@ -336,10 +336,10 @@ def plot_mttbar(argv) :
             passKin = hadTopCandP4.Perp() > 400.
             passTopTag = mass_sd > 75 #tau32 < 0.6 and mass_sd > 110. and mass_sd < 250.
 
-            #pass2DCut = LeptonPtRel[0] > 55. or LeptonDRMin[0] > 0.4
-            #passBtag = bdisc > 0.7
+            pass2DCut = LeptonPtRel[0] > 55. or LeptonDRMin[0] > 0.4
+            passBtag = bdisc > 0.8484
 
-            if not passKin or not passTopTag:# or not pass2DCut or not passBtag or not passTopTag :
+            if not passKin or not passTopTag or not passBtag or not pass2DCut:
                 continue
 
 
@@ -403,7 +403,7 @@ def plot_mttbar(argv) :
             h_LeptonEnergy.Fill( LeptonEnergy[0], new_weight )
             h_LeptonIso.Fill( LeptonIso[0], new_weight )
             h_LeptonPtRel.Fill( LeptonPtRel[0], new_weight )
-            #h_LeptonDRMin.Fill( LeptonDRMin[0], new_weight )
+            h_LeptonDRMin.Fill( LeptonDRMin[0], new_weight )
             h_SemiLepMETpt.Fill( SemiLepMETpt[0], new_weight )
             h_SemiLepMETphi.Fill( SemiLepMETphi[0], new_weight )
             h_SemiLepNvtx.Fill( SemiLepNvtx[0], new_weight )
