@@ -69,13 +69,13 @@ def plot_mttbar(argv) :
     h_PUWeight              = ROOT.TH1F("h_PUWeight", ";blah;blah", 200, 0, 50)
     h_FatJetRap             = ROOT.TH1F("h_FatJetRap", ";blah;blah", 200, 0, 500)
     h_FatJetEnergy          = ROOT.TH1F("h_FatJetEnergy", ";Fat Jet Energy [GeV];Entries", 250, 0, 5000)
-    h_FatJetBDisc           = ROOT.TH1F("h_FatJetBDisc", ";B Discriminant;Entries", 200, 0, 500)
+    h_FatJetBDisc           = ROOT.TH1F("h_FatJetBDisc", ";B Discriminant;Entries", 200, 0, 1)
     h_FatJetMass            = ROOT.TH1F("h_FatJetMass", ";Fat Jet Mass [GeV];Entries", 200, 0, 500)
     h_FatJetMassSoftDrop    = ROOT.TH1F("h_FatJetMassSoftDrop", ";Fat Jet SD Mass [GeV];Entries", 200, 0, 500)
     h_FatJetTau32           = ROOT.TH1F("h_FatJetTau32", ";Fat Jet #tau_{32};Entries", 200, 0, 1)
     #h_FatJetTau21           = ROOT.TH1F("h_FatJetTau21", ";blah;Entries", 200, 0, 500)
     #h_FatJetSDBDiscW        = ROOT.TH1F("h_FatJetSDBDiscW", ";blah;Entries", 200, 0, 500)
-    h_FatJetSDBDiscB        = ROOT.TH1F("h_FatJetSDBDiscB", ";Fat SD Jet B Discriminant;Entries", 200, 0, 500)
+    h_FatJetSDBDiscB        = ROOT.TH1F("h_FatJetSDBDiscB", ";Fat SD Jet B Discriminant;Entries", 200, 0, 1)
     h_FatJetSDsubjetWpt     = ROOT.TH1F("h_FatJetSDsubjetWpt", ";Fat SD Jet W Pt [GeV];Entries", 200, 0, 500)
     h_FatJetSDsubjetWmass   = ROOT.TH1F("h_FatJetSDsubjetWmass", ";Fat SD Jet W mass [GeV];Entries", 200, 0, 500)
     h_FatJetSDsubjetBpt     = ROOT.TH1F("h_FatJetSDsubjetBpt", ";Fat SD Jet B Pt [GeV];Entries", 200, 0, 500)
@@ -91,7 +91,7 @@ def plot_mttbar(argv) :
     h_LeptonEnergy          = ROOT.TH1F("h_LeptonEnergy", ";Lepton Energy [GeV];Entries", 200, 0, 500)
     h_LeptonIso             = ROOT.TH1F("h_LeptonIso", ";Lepton Iso;Entries", 200, 0, 500)
     h_LeptonPtRel           = ROOT.TH1F("h_LeptonPtRel", ";Lepton PtRel [GeV];Entries", 200, 0, 500)
-    #h_LeptonDRMin           = ROOT.TH1F("h_LeptonDRMin", ";blah;Entries", 200, 0, 500)
+    h_LeptonDRMin           = ROOT.TH1F("h_LeptonDRMin", ";LeptonDRMin;Entries", 200, 0, 5)
     h_SemiLepMETpt          = ROOT.TH1F("h_SemiLepMETpt", ";MET Pt [GeV];Entries", 200, 0, 500)
     h_SemiLepMETphi         = ROOT.TH1F("h_SemiLepMETphi", ";MET #phi;Entries", 200, -3.14, 3.14)
     h_SemiLepNvtx           = ROOT.TH1F("h_SemiLepNvtx", ";N Vertex;Entries", 25, -0.5, 19.5)
@@ -157,7 +157,7 @@ def plot_mttbar(argv) :
         LeptonDRMin         = array.array('f', [-1.])
         SemiLepMETpt        = array.array('f', [-1.])
         SemiLepMETphi       = array.array('f', [-1.])
-        SemiLepNvtx         = array.array('f', [-1.])
+        SemiLepNvtx         = array.array('i', [0])
         FatJetDeltaPhiLep      = array.array('f', [-1.])
         NearestAK4JetBDisc            = array.array('f', [-1.])
         NearestAK4JetPt     = array.array('f', [-1.])
@@ -258,10 +258,12 @@ def plot_mttbar(argv) :
         t.SetBranchStatus ('LeptonIDWeightUnc'      , 1)
         t.SetBranchStatus ('MuonTrkWeight'      , 1)
         t.SetBranchStatus ('MuonTrkWeightUnc'      , 1)
+        t.SetBranchStatus ('SemiLepNvtx'         ,1)
 
 
         entries = t.GetEntriesFast()
         print 'Processing tree ' + str(itree)
+        data_message = False    
 
         eventsToRun = entries
         for jentry in xrange( eventsToRun ):
@@ -274,7 +276,9 @@ def plot_mttbar(argv) :
 
             lepweight = LeptonIDWeight[0]
 
-            new_pileup = h_purw.GetBinContent(int(SemiLepNvtx[0])+1)
+            new_pileup = h_purw.GetBinContent(SemiLepNvtx[0]+1)
+            # print SemiLepNvtx[0]
+            # print new_pileup
 
             new_weight = new_pileup*GenWeight[0]/abs(GenWeight[0])
             # Muons only for now
@@ -302,14 +306,33 @@ def plot_mttbar(argv) :
 
             new_weight*=lepweight
 
+
+            if options.file_out.find("data") != -1:
+                if data_message==False:
+                    print "Sample is data. Setting weights to 1"
+                    data_message=True
+                new_weight=1.0
+
             hadTopCandP4 = ROOT.TLorentzVector()
             hadTopCandP4.SetPtEtaPhiM( FatJetPt[0], FatJetEta[0], FatJetPhi[0], FatJetMass[0])
             bJetCandP4 = ROOT.TLorentzVector()
             bJetCandP4.SetPtEtaPhiM( NearestAK4JetPt[0], NearestAK4JetEta[0], NearestAK4JetPhi[0], NearestAK4JetMass[0])
-            nuCandP4 = ROOT.TLorentzVector( )
+            nuCandP4 = ROOT.TLorentzVector()
             nuCandP4.SetPtEtaPhiM( SemiLepMETpt[0], 0, SemiLepMETphi[0], SemiLepMETpt[0] )
             theLepton = ROOT.TLorentzVector()
             theLepton.SetPtEtaPhiE( LeptonPt[0], LeptonEta[0], LeptonPhi[0], LeptonEnergy[0] ) # Assume massless
+
+            if (options.jes==1):
+                bJetCandP4*=NearestAK4JetJECUpSys[0]
+                hadTopCandP4*=NearestAK4JetJECUpSys[0]
+            elif (options.jes==2):
+                bJetCandP4*=NearestAK4JetJECDnSys[0]
+                hadTopCandP4*=NearestAK4JetJECDnSys[0]
+
+            FatJetPt[0]=hadTopCandP4.Pt()
+            FatJetMass[0]=hadTopCandP4.M()
+            NearestAK4JetPt[0]=bJetCandP4.Pt()
+            NearestAK4JetMass[0]=bJetCandP4.M()
 
 
             tau32 = FatJetTau32[0]
@@ -317,10 +340,10 @@ def plot_mttbar(argv) :
             bdisc = NearestAK4JetBDisc[0]
 
             passKin = hadTopCandP4.Perp() > 400.
-            passTopTag = tau32 < 0.6 and mass_sd > 110. and mass_sd < 250.
+            passTopTag = mass_sd > 75 and tau32 < 0.7
 
             pass2DCut = LeptonPtRel[0] > 55. or LeptonDRMin[0] > 0.4
-            passBtag = bdisc > 0.7
+            passBtag = bdisc > 0.8484
 
 	    if options.category == 'All':
             	if not passKin or not pass2DCut or not passBtag or not passTopTag :
@@ -399,7 +422,7 @@ def plot_mttbar(argv) :
             h_LeptonEnergy.Fill( LeptonEnergy[0], new_weight )
             h_LeptonIso.Fill( LeptonIso[0], new_weight )
             h_LeptonPtRel.Fill( LeptonPtRel[0], new_weight )
-            #h_LeptonDRMin.Fill( LeptonDRMin[0], new_weight )
+            h_LeptonDRMin.Fill( LeptonDRMin[0], new_weight )
             h_SemiLepMETpt.Fill( SemiLepMETpt[0], new_weight )
             h_SemiLepMETphi.Fill( SemiLepMETphi[0], new_weight )
             h_SemiLepNvtx.Fill( SemiLepNvtx[0], new_weight )
