@@ -1,15 +1,15 @@
-#include <ofstream>
+// #include <ofstream>
 
-void write_card(TString card, int data, int back, int ttbar, int signal){
+void write_card(TString card, int data, double back, double ttbar, double signal){
 	ofstream out("cards/" + card + ".txt");
 	out<<"# Simple counting experiment, with one signal and one background"<<endl;
-	out<<"imax 2  number of channels"<<endl;
+	out<<"imax 1  number of channels"<<endl;
 	out<<"jmax 2  number of backgrounds"<<endl;
 	out<<"kmax *  number of nuisance parameters (sources of systematic uncertainty)"<<endl;
 	out<<"------------"<<endl;
 	out<<"# we have just one channel, in which we observe 0 events"<<endl;
-	out<<"bin         elec  muon"<<endl;
-	out<<"observation 4395  3870"<<endl;
+	out<<"bin         lept"<<endl;
+	out<<Form("observation %i",data)<<endl;
 	out<<"------------"<<endl;
 	out<<"# now we list the expected number of events for signal and all backgrounds in that bin"<<endl;
 	out<<"# the second 'process' line must have a positive number for backgrounds, and 0 for signal"<<endl;
@@ -17,17 +17,16 @@ void write_card(TString card, int data, int back, int ttbar, int signal){
 	out<<"# on each process and bin"<<endl;
 	out<<""<<endl;
 	out<<"#bkg is w+jets, single top, and QCD"<<endl;
-	out<<"bin            elec    elec      elec     muon   muon     muon"<<endl;
-	out<<"process         sig    bkg       ttbar    sig     bkg     ttbar"<<endl;
-	out<<"process          0      1         2        0       1        2"<<endl;
-	out<<"rate           62.7   330.402  4857.75   71.62   583.246  4585.7"<<endl;
+	out<<"bin            lept    lept      lept"<<endl;
+	out<<"process         sig    bkg       ttbar"<<endl;
+	out<<"process          0      1         2"<<endl;
+	out<<Form("rate         %.1f   %.1f      %.1f",signal,back,ttbar)<<endl;
 	out<<"------------"<<endl;
-	out<<"lumi     lnN    1.026  1.026  1.026  1.026  1.026  1.026   #lumi affects both signal and background (mc-driven). lnN = lognormal"<<endl;
-	out<<"trigger  lnN    1.05   1.05   1.05   1.01   1.01   1.01    #trigger uncertainty"<<endl;
-	out<<"elec_id  lnN    1.02   1.02   1.02     -      -      -     #lepton id scale factor uncertainty"<<endl;
-	out<<"muon_id  lnN      -      -      -    1.02   1.02   1.02    #lepton id scale factor uncertainty"<<endl;
-	out<<"jec      lnN    1.10   1.10   1.10   1.10   1.10   1.10    #jet energy scale uncertainty"<<endl;
-	out<<"jer      lnN    1.05   1.05   1.05   1.05   1.05   1.05    #jet energy resolution uncertainty"<<endl;
+	out<<"lumi     lnN    1.026  1.026  1.026  #lumi affects both signal and background (mc-driven). lnN = lognormal"<<endl;
+	out<<"trigger  lnN    1.05   1.05   1.05   #trigger uncertainty"<<endl;
+	out<<"elec_id  lnN    1.02   1.02   1.02   #lepton id scale factor uncertainty"<<endl;
+	out<<"jec      lnN    1.10   1.10   1.10   #jet energy scale uncertainty"<<endl;
+	out<<"jer      lnN    1.05   1.05   1.05   #jet energy resolution uncertainty"<<endl;
 }
 
 void background_plotter(int rebin = 2, bool verbose = false, double lumi=36000.0){
@@ -85,12 +84,12 @@ void background_plotter(int rebin = 2, bool verbose = false, double lumi=36000.0
 	datas.push_back("SingleElectron_2016_All.root");
 	datas.push_back("singleMuon_ALL.root");
 
-	// channel.push_back("0Top1BEle");
-	// channel.push_back("0Top1BMu");
-	// channel.push_back("1Top0BEle");
-	channel.push_back("1Top0BMu");
-	channel.push_back("1Top1BEle");
-	channel.push_back("1Top1BMu");
+	channel.push_back("0Top1BEle");
+	channel.push_back("0Top1BMu");
+	channel.push_back("1Top0BEle");
+	// channel.push_back("1Top0BMu");
+	// channel.push_back("1Top1BEle");
+	// channel.push_back("1Top1BMu");
 
 	histos.push_back("h_mttbar");
 	// histos.push_back("h_mttbar_jes_down");
@@ -172,11 +171,15 @@ void background_plotter(int rebin = 2, bool verbose = false, double lumi=36000.0
 				c->Write();
 				c->SaveAs("stack_plots/" + ((TString) c->GetName()) + ".png");
 
+
+				if (verbose){
 				cout<<channel[l]<<endl;
 				cout<<"\tData: "<<h_data->Integral()<<endl;
 				cout<<"\tBackground: "<<h_back->Integral()<<endl;
 				cout<<"\tttbar: "<<h_ttbar->Integral()<<endl;
 				cout<<"\tSignal: "<<h_signal->Integral()<<endl;
+				}
+				write_card(channel[l] + "_mass_" + masspoint[m].first,h_data->Integral(),h_back->Integral(),h_ttbar->Integral(), h_signal->Integral());
 			}
 		}
 
