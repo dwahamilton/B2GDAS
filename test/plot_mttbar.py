@@ -337,7 +337,7 @@ def plot_mttbar(argv) :
             bdisc = NearestAK4JetBDisc[0]
 
             passKin = hadTopCandP4.Perp() > 400.
-            passTopTag = mass_sd > 75 #tau32 < 0.6 and mass_sd > 110. and mass_sd < 250.
+            passTopTag = mass_sd > 75 and tau32 < 0.7
 
             pass2DCut = LeptonPtRel[0] > 55. or LeptonDRMin[0] > 0.4
             passBtag = bdisc > 0.8484
