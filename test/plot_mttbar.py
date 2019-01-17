@@ -279,34 +279,26 @@ def plot_mttbar(argv) :
                 break
 
             lepweight = LeptonIDWeight[0]
+            if lepweight==0:
+                continue
 
             new_pileup = h_purw.GetBinContent(SemiLepNvtx[0]+1)
-            # print SemiLepNvtx[0]
-            # print new_pileup
 
             new_weight = new_pileup*GenWeight[0]/abs(GenWeight[0])
-            # Muons only for now
+
             if options.leptontype == 1:
                 if LeptonType[0] != 13 :
                     continue
                 if SemiLeptTrig[0] != 1  :
                     continue
                 new_weight*=MuonTrkWeight[0]
-                # if (options.muon_unc==1):
-                #     lepweight -= LeptonIDWeightUnc[0]
-                # elif (options.muon_unc==2):
-                #     lepweight += LeptonIDWeightUnc[0]    
 
 
             if options.leptontype == 0:
                 if LeptonType[0] != 11 :
                     continue
                 if SemiLeptTrig[1] != 1  :
-                    continue    
-                # if (options.elec_unc==1):
-                #     lepweight -= LeptonIDWeightUnc[0]
-                # elif (options.elec_unc==2):
-                #     lepweight += LeptonIDWeightUnc[0]    
+                    continue 
 
             new_weight*=lepweight
 
@@ -382,6 +374,8 @@ def plot_mttbar(argv) :
                 nuCandP4.SetPz( nuz1.real )
 
             for s in xrange(5):
+                if options.file_out.find("data") != -1 and s:
+                    break
                 if s==0:
                     bJetDummy = bJetCandP4
                     tJetDummy = hadTopCandP4
