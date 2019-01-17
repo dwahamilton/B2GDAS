@@ -154,7 +154,7 @@ def plot_mttbar(argv) :
         LeptonDRMin         = array.array('f', [-1.])
         SemiLepMETpt        = array.array('f', [-1.])
         SemiLepMETphi       = array.array('f', [-1.])
-        SemiLepNvtx         = array.array('f', [-1.])
+        SemiLepNvtx         = array.array('i', [0])
         FatJetDeltaPhiLep      = array.array('f', [-1.])
         NearestAK4JetBDisc            = array.array('f', [-1.])
         NearestAK4JetPt     = array.array('f', [-1.])
@@ -255,6 +255,7 @@ def plot_mttbar(argv) :
         t.SetBranchStatus ('LeptonIDWeightUnc'      , 1)
         t.SetBranchStatus ('MuonTrkWeight'      , 1)
         t.SetBranchStatus ('MuonTrkWeightUnc'      , 1)
+        t.SetBranchStatus ('SemiLepNvtx'         ,1)
 
 
         entries = t.GetEntriesFast()
@@ -271,7 +272,9 @@ def plot_mttbar(argv) :
 
             lepweight = LeptonIDWeight[0]
 
-            new_pileup = h_purw.GetBinContent(int(SemiLepNvtx[0])+1)
+            new_pileup = h_purw.GetBinContent(SemiLepNvtx[0]+1)
+            # print SemiLepNvtx[0]
+            # print new_pileup
 
             new_weight = new_pileup*GenWeight[0]/abs(GenWeight[0])
             # Muons only for now
