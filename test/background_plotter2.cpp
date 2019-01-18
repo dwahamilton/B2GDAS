@@ -222,7 +222,9 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 				c->Write();
 				
 				//c->SaveAs("stack_plots/" + ((TString) c->GetName()) + ".png");
-				c->SaveAs("stack_plots/" + ((TString) c->GetName()) + ".root");
+				//c->SaveAs("stack_plots/" + ((TString) c->GetName()) + ".root");
+
+				c->SaveAs("stack_plots/" "plots.root");
 
 			}
 		}
