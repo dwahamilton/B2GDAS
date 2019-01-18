@@ -12,16 +12,16 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 
 	TString basepath = "/uscms/home/jhiltb/nobackup/sandbox/LongExercise/CMSSW_8_0_24_patch1/src/Analysis/B2GDAS/test/combinedOutput/";
 
-	masspoint.push_back(make_pair("500",275.9*1.3/100000.0));
-	masspoint.push_back(make_pair("750",62.41*1.3/100000.0));
-	masspoint.push_back(make_pair("1000",20.05*1.3/98560.0));
-	masspoint.push_back(make_pair("2000",0.9528*1.3/100000.0));
-	masspoint.push_back(make_pair("2500",0.3136*1.3/100000.0));
+	//masspoint.push_back(make_pair("500",275.9*1.3/100000.0));
+	//masspoint.push_back(make_pair("750",62.41*1.3/100000.0));
+	//masspoint.push_back(make_pair("1000",20.05*1.3/98560.0));
+	//masspoint.push_back(make_pair("2000",0.9528*1.3/100000.0));
+	//masspoint.push_back(make_pair("2500",0.3136*1.3/100000.0));
 	masspoint.push_back(make_pair("3000",0.1289*1.3/99755.0));
-	masspoint.push_back(make_pair("3500",0.05452*1.3/99508.0));
-	masspoint.push_back(make_pair("4000",0.02807*1.3/99136.0));
-	masspoint.push_back(make_pair("4500",0.01603*1.3/99597.0));
-	masspoint.push_back(make_pair("5000",0.009095*1.3/98413.0));
+	//masspoint.push_back(make_pair("3500",0.05452*1.3/99508.0));
+	//masspoint.push_back(make_pair("4000",0.02807*1.3/99136.0));
+	//masspoint.push_back(make_pair("4500",0.01603*1.3/99597.0));
+	//masspoint.push_back(make_pair("5000",0.009095*1.3/98413.0));
 
 	backgrounds.push_back(make_pair("WJetsToLNu_Wpt-0To50.root",(1.0*57280.0)/(99983076.0*0.34)));
 	backgrounds.push_back(make_pair("WJetsToLNu_Wpt-50To100.root",(1.0*3258.0)/(67082709.0*0.36)));
@@ -63,6 +63,18 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 	channel.push_back("1Top1BMu");
 
 	histos.push_back("h_mttbar");
+
+
+	histos.push_back("h_FatJetPt");
+	histos.push_back("h_FatJetEta");
+	histos.push_back("h_FatJetEnergy");
+	histos.push_back("h_FatJetMass");
+	histos.push_back("h_FatJetMassSoftDrop");
+	histos.push_back("h_LeptonPt");
+	histos.push_back("h_LeptonEta");
+	histos.push_back("h_LeptonEnergy");
+
+
 	// histos.push_back("h_mttbar_jes_down");
 	// histos.push_back("h_mttbar_jes_up");
 	// histos.push_back("h_mttbar_jer_down");
