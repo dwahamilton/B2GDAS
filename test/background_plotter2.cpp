@@ -67,12 +67,16 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 
 	histos.push_back("h_FatJetPt");
 	histos.push_back("h_FatJetEta");
+	histos.push_back("h_FatJetPhi");
 	histos.push_back("h_FatJetEnergy");
 	histos.push_back("h_FatJetMass");
 	histos.push_back("h_FatJetMassSoftDrop");
 	histos.push_back("h_LeptonPt");
+	histos.push_back("h_LeptonPtRel");
 	histos.push_back("h_LeptonEta");
+	histos.push_back("h_LeptonPhi");
 	histos.push_back("h_LeptonEnergy");
+	
 
 
 	// histos.push_back("h_mttbar_jes_down");
@@ -149,7 +153,7 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 				lPad->SetBottomMargin(.4);
 				lPad->SetRightMargin(0.04);
 				lPad->SetLeftMargin(.205);
-				lPad->SetGridy();
+				//lPad->SetGridy();
 				lPad->Draw();
 				uPad->cd();
 
@@ -195,25 +199,30 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 				allbackground->Add(h_back);
 
 				hratio->Divide(h_data,allbackground,1,1,"B");
-				
-				hratio->GetXaxis()->SetLabelSize(0.07);
+
+				hratio->SetLabelSize(0.15,"x");
+				hratio->SetLabelSize(0.15,"y");
+
 				hratio->GetYaxis()->SetTitle("data/bkg");
 				hratio->SetMarkerStyle(20);
-				hratio->GetYaxis()->SetRangeUser(0.3,2.0);
+				
+				hratio->GetYaxis()->SetRangeUser(0,2.0);
 				hratio->GetYaxis()->SetLabelSize(0.07);
 				hratio->GetYaxis()->SetTitleOffset(0.45);
+					
 				hratio->SetStats(false);
 				hratio->SetTitleSize(0.15, "x");
-				//hratio->SetTitleSize(0.04, "Y");
-
 				hratio->SetTitleSize(0.12, "Y");
 
+				
+				//hratio->GetXaxis()->SetLabelSize(4.2);
 				hratio->Draw("PE");
 				
 				output->cd();
 				c->Write();
 				
-				c->SaveAs("stack_plots/" + ((TString) c->GetName()) + ".png");
+				//c->SaveAs("stack_plots/" + ((TString) c->GetName()) + ".png");
+				c->SaveAs("stack_plots/" + ((TString) c->GetName()) + ".root");
 
 			}
 		}
