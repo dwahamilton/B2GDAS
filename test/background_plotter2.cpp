@@ -119,6 +119,9 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 					h_back->Rebin(rebin);
 				}
 
+				
+				//h_ttbar->GetYaxis()->SetTitle("Number events/bin");
+
 				//Make stack
 				TCanvas* c = new TCanvas("c_" + channel[l] + "_" + histos[h] + "_" + masspoint[m].first, channel[l] + "_" + histos[h], 800,600);
 
@@ -126,14 +129,14 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 				uPad->SetTopMargin(0.08);
 				uPad->SetBottomMargin(0.00001);
 				uPad->SetRightMargin(0.04);
-				uPad->SetLeftMargin(.105);
+				uPad->SetLeftMargin(.205);
 				uPad->Draw();
 
 				TPad *lPad=new TPad("lPad","",0,0,1,0.25);
 				lPad->SetTopMargin(0);
 				lPad->SetBottomMargin(.4);
 				lPad->SetRightMargin(0.04);
-				lPad->SetLeftMargin(.105);
+				lPad->SetLeftMargin(.205);
 				lPad->SetGridy();
 				lPad->Draw();
 				uPad->cd();
@@ -142,7 +145,10 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 				THStack* stack = new THStack("hs","");
 				//THStack* stack = new THStack(((TString) c->GetName()) + "_stack", ((TString) c->GetTitle()) + ";" + h_ttbar->GetXaxis()->GetTitle() + ";" + h_ttbar->GetYaxis()->GetTitle());
 
-				stack->SetMinimum(0);
+				//stack->SetMinimum(0);
+
+				stack->SetMinimum(0.1);
+
 				h_back->SetFillColor(kGreen);
 				
 				stack->Add(h_back);
@@ -152,6 +158,9 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 				h_data->SetMarkerStyle(2);
 
 				stack->Draw("hist");
+				stack->GetYaxis()->SetTitle("Number events/bin");
+
+				stack->GetYaxis()->SetTitleOffset(1.);
 				
 				h_data->SetMarkerStyle(8);
 				h_data->Draw("samepe");
@@ -175,14 +184,17 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 
 				hratio->Divide(h_data,allbackground,1,1,"B");
 				
+				hratio->GetXaxis()->SetLabelSize(0.07);
 				hratio->GetYaxis()->SetTitle("data/bkg");
 				hratio->SetMarkerStyle(20);
 				hratio->GetYaxis()->SetRangeUser(0.3,2.0);
 				hratio->GetYaxis()->SetLabelSize(0.07);
-
+				hratio->GetYaxis()->SetTitleOffset(0.45);
 				hratio->SetStats(false);
 				hratio->SetTitleSize(0.15, "x");
-				hratio->SetTitleSize(0.04, "Y");
+				//hratio->SetTitleSize(0.04, "Y");
+
+				hratio->SetTitleSize(0.12, "Y");
 
 				hratio->Draw("PE");
 				
