@@ -59,12 +59,10 @@ void background_plotter2(int rebin = 2, bool verbose = false, double lumi=35867.
 	// channel.push_back("0Top1BMu");
 	// channel.push_back("1Top0BEle");
 	//channel.push_back("1Top0BMu");
-	//channel.push_back("1Top1BEle");
-	channel.push_back("1Top1BMu");
+	channel.push_back("1Top1BEle");
+	//channel.push_back("1Top1BMu");
 
 	histos.push_back("h_mttbar");
-
-
 	histos.push_back("h_FatJetPt");
 	histos.push_back("h_FatJetEta");
 	histos.push_back("h_FatJetPhi");
